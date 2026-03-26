@@ -47,18 +47,18 @@
 
     /* ── TOAST SYSTEM ── */
     .toast-container {
-      position: fixed; top: 56px; right: 8px; width: 280px;
+      position: fixed; top: 56px; right: 8px; width: 340px;
       z-index: 9999; pointer-events: none;
-      display: flex; flex-direction: column; gap: 5px;
+      display: flex; flex-direction: column; gap: 8px;
     }
     .toast {
       background: rgba(35, 160, 90, 0.95); border: 1px solid rgba(61,220,132,0.5);
-      border-radius: 4px; padding: 8px 28px 14px 10px;
+      border-radius: 4px; padding: 12px 32px 18px 14px;
       pointer-events: all; position: relative; overflow: hidden;
       animation: toast-in 0.22s ease;
     }
     .toast-msg {
-      font-family: 'Rajdhani', sans-serif; font-size: 0.82rem; font-weight: 600;
+      font-family: 'Rajdhani', sans-serif; font-size: 0.95rem; font-weight: 600; line-height: 1.35;
       color: #000; letter-spacing: 0.3px; line-height: 1.3;
     }
     .toast-close {
@@ -70,7 +70,7 @@
     .toast-bar {
       position: absolute; bottom: 0; left: 0; height: 3px;
       background: rgba(0,0,0,0.25); width: 100%;
-      animation: toast-bar 3s linear forwards;
+      animation: toast-bar 6s linear forwards;
     }
     @keyframes toast-in  { from { transform: translateX(110%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     @keyframes toast-out { from { opacity: 1; max-height: 80px; margin-bottom: 0; } to { opacity: 0; max-height: 0; padding-top: 0; padding-bottom: 0; margin-bottom: -5px; } }
@@ -108,9 +108,12 @@
     .portrait-wrap { width: 44px; height: 44px; flex-shrink: 0; background: #000; border-radius: 2px; overflow: hidden; display: flex; align-items: center; justify-content: center; isolation: isolate; }
     .portrait-wrap img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: screen; display: block; }
 
-    .enemy-select-wrap { flex: 1; min-width: 0; }
-    select.enemy-select { background: var(--surface3); border: 1px solid var(--border2); color: var(--text); font-family: 'Share Tech Mono', monospace; font-size: 0.62rem; padding: 4px 6px; width: 100%; outline: none; cursor: pointer; border-radius: 2px; }
-    select.enemy-select:focus { border-color: var(--accent); }
+    .enemy-selected-name {
+      flex: 1; font-family: 'Rajdhani', sans-serif; font-size: 1.1rem;
+      font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--text); padding: 0 5px; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis;
+    }
 
     .cost-tag { display: flex; align-items: center; gap: 4px; font-family: 'Share Tech Mono', monospace; font-size: 0.85rem; color: var(--gold); flex-shrink: 0; white-space: nowrap; }
     .cost-tag img { width: 16px; height: 16px; mix-blend-mode: screen; }
@@ -385,9 +388,7 @@
       <div class="spawn-sub visible" id="tab-spawn">
         <div class="spawn-config">
           <div class="portrait-wrap"><img id="preview-img" src="" alt=""></div>
-          <div class="enemy-select-wrap">
-            <select class="enemy-select" id="enemy-dropdown" onchange="onDropdownChange()"></select>
-          </div>
+          <div class="enemy-selected-name" id="selected-enemy-name">Sword 1</div>
           <div class="cost-tag"><img src="images/coin.png" alt=""><span id="sel-cost-num">100</span></div>
         </div>
         <div class="rider-row" id="rider-row">
@@ -669,7 +670,7 @@
     if (card) { card.classList.add('selected'); card.scrollIntoView({ block: 'nearest' }); }
     const armor = document.getElementById('chk-armor').checked;
     document.getElementById('preview-img').src = portrait(id, armor);
-    document.getElementById('enemy-dropdown').value = id;
+    document.getElementById('selected-enemy-name').textContent = enemy.name;
     const riderRow = document.getElementById('rider-row');
     if (enemy.isRaptor) { riderRow.classList.add('visible'); }
     else { riderRow.classList.remove('visible'); setRider(null); }
@@ -701,27 +702,6 @@
     });
     updateCostDisplay();
   }
-
-  // ==========================================================================
-  //  SPAWN DROPDOWN
-  // ==========================================================================
-  function buildDropdown() {
-    const dd = document.getElementById('enemy-dropdown');
-    dd.innerHTML = '';
-    GAME_TIERS.forEach(tier => {
-      const list = ENEMIES.filter(e => e.gameTier === tier.id);
-      if (!list.length) return;
-      const og = document.createElement('optgroup');
-      og.label = tier.name;
-      list.forEach(e => {
-        const opt = document.createElement('option');
-        opt.value = e.id; opt.textContent = e.name;
-        og.appendChild(opt);
-      });
-      dd.appendChild(og);
-    });
-  }
-  function onDropdownChange() { selectEnemy(document.getElementById('enemy-dropdown').value); }
 
   // ==========================================================================
   //  RIDER POPUP
@@ -1015,7 +995,7 @@
       '<div class="toast-bar"></div>';
     container.appendChild(toast);
     // Auto-dismiss after 3s (matching the CSS bar animation duration)
-    setTimeout(() => dismissToast(toast), 3000);
+    setTimeout(() => dismissToast(toast), 6000);
   }
 
   function dismissToast(el) {
@@ -1215,7 +1195,7 @@
       if (serverTier && serverTier !== e.gameTier) { e.gameTier = serverTier; changed = true; }
     });
     if (changed) {
-      buildDropdown(); buildSpawnGrid(); buildKillerGrid();
+      buildSpawnGrid(); buildKillerGrid();
       selectEnemy(selectedEnemy.id);
       selectKiller(selectedKillerEnemy ? selectedKillerEnemy.id : null);
     }
@@ -1442,7 +1422,6 @@
   // ==========================================================================
   //  INIT
   // ==========================================================================
-  buildDropdown();
   buildSpawnGrid();
   buildKillerGrid();
   buildTierGrid();
