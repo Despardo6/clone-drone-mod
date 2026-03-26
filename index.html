@@ -552,6 +552,12 @@ const ENEMIES = [
     { id:'jetpackhammer',     name:'JP Hammer',      cost:600,  gameTier:'diamond',  canKill:true  },
     { id:'jetpackspear1',     name:'JP Spear 1',     cost:500,  gameTier:'diamond',  canKill:true  },
     { id:'jetpackspear2',     name:'JP Spear 2',     cost:1000, gameTier:'titanium', canKill:true  },
+    // Ice
+    { id:'icesword',          name:'Ice Sword',      cost:650,  gameTier:'diamond',  canKill:true,  isMod:true },
+    { id:'icearcher',         name:'Ice Archer',     cost:650,  gameTier:'diamond',  canKill:true,  isMod:true },
+    { id:'icehammer',         name:'Ice Hammer',     cost:550,  gameTier:'diamond',  canKill:true,  isMod:true },
+    { id:'icespear',          name:'Ice Spear',      cost:750,  gameTier:'diamond',  canKill:true,  isMod:true },
+    { id:'icekicker',         name:'Ice Kicker',     cost:350,  gameTier:'silver',   canKill:false, isMod:true },
     // Zombies
     { id:'zombie1',           name:'Zombie 1',       cost:150,  gameTier:'bronze',   canKill:true  },
     { id:'zombie2',           name:'Zombie 2',       cost:300,  gameTier:'silver',   canKill:true  },
@@ -640,7 +646,7 @@ const ENEMIES = [
     const wrap = document.getElementById('enemy-grid-wrap');
     wrap.innerHTML = '';
     GAME_TIERS.forEach(tier => {
-      const enemies = ENEMIES.filter(e => e.gameTier === tier.id);
+      const enemies = ENEMIES.filter(e => e.gameTier === tier.id && (!e.isMod || e.serverConfirmed));
       if (!enemies.length) return;
       const lbl = document.createElement('div');
       lbl.className = 'grid-section-label';
@@ -735,7 +741,7 @@ const ENEMIES = [
     noneItem.onclick = () => { setRider(null); closeRiderPopup(); };
     popup.appendChild(noneItem);
 
-    let rideable = ENEMIES.filter(e => !RIDER_EXCLUDED.has(e.id));
+    let rideable = ENEMIES.filter(e => !RIDER_EXCLUDED.has(e.id) && (!e.isMod || e.serverConfirmed));
     if (spawnableIds && spawnableIds.length > 0)
       rideable = rideable.filter(e => spawnableIds.includes(e.id));
 
@@ -805,7 +811,7 @@ const ENEMIES = [
     othCard.onclick = () => selectKiller(null);
     wrap.appendChild(othCard);
     GAME_TIERS.forEach(tier => {
-      const enemies = ENEMIES.filter(e => e.gameTier === tier.id && e.canKill);
+      const enemies = ENEMIES.filter(e => e.gameTier === tier.id && e.canKill && (!e.isMod || e.serverConfirmed));
       if (!enemies.length) return;
       const lbl = document.createElement('div');
       lbl.className = 'grid-section-label'; lbl.style.color = tier.color;
@@ -1203,11 +1209,33 @@ const ENEMIES = [
   function applyEnemyTiers(enemyTiers) {
     let changed = false;
     ENEMIES.forEach(e => {
+      // Check if mod enemies are loaded in the game factory
+      if (e.isMod) {
+        const exists = enemyTiers.hasOwnProperty(e.id);
+        if (exists !== !!e.serverConfirmed) {
+          e.serverConfirmed = exists;
+          changed = true;
+        }
+      }
+      // Check tier changes
       const serverTier = enemyTiers[e.id];
-      if (serverTier && serverTier !== e.gameTier) { e.gameTier = serverTier; changed = true; }
+      if (serverTier && serverTier !== e.gameTier) {
+        e.gameTier = serverTier;
+        changed = true;
+      }
     });
+
     if (changed) {
-      buildSpawnGrid(); buildKillerGrid();
+      // Prevent selection getting stuck on a mod enemy that was uninstalled
+      if (selectedEnemy && selectedEnemy.isMod && !selectedEnemy.serverConfirmed) selectedEnemy = ENEMIES[0];
+      if (selectedKillerEnemy && selectedKillerEnemy.isMod && !selectedKillerEnemy.serverConfirmed) selectedKillerEnemy = null;
+      if (selectedRiderId) {
+        const r = getRiderEnemy();
+        if (r && r.isMod && !r.serverConfirmed) setRider(null);
+      }
+      
+      buildSpawnGrid();
+      buildKillerGrid();
       selectEnemy(selectedEnemy.id);
       selectKiller(selectedKillerEnemy ? selectedKillerEnemy.id : null);
     }
