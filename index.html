@@ -45,6 +45,37 @@
       background: #ff4c4c; animation: pulse 1.4s ease-in-out infinite;
     }
 
+    /* ── TOAST SYSTEM ── */
+    .toast-container {
+      position: fixed; top: 56px; right: 8px; width: 280px;
+      z-index: 9999; pointer-events: none;
+      display: flex; flex-direction: column; gap: 5px;
+    }
+    .toast {
+      background: rgba(35, 160, 90, 0.95); border: 1px solid rgba(61,220,132,0.5);
+      border-radius: 4px; padding: 8px 28px 14px 10px;
+      pointer-events: all; position: relative; overflow: hidden;
+      animation: toast-in 0.22s ease;
+    }
+    .toast-msg {
+      font-family: 'Rajdhani', sans-serif; font-size: 0.82rem; font-weight: 600;
+      color: #000; letter-spacing: 0.3px; line-height: 1.3;
+    }
+    .toast-close {
+      position: absolute; top: 3px; right: 6px;
+      background: none; border: none; color: rgba(0,0,0,0.5);
+      cursor: pointer; font-size: 0.9rem; padding: 0; line-height: 1;
+    }
+    .toast-close:hover { color: #000; }
+    .toast-bar {
+      position: absolute; bottom: 0; left: 0; height: 3px;
+      background: rgba(0,0,0,0.25); width: 100%;
+      animation: toast-bar 3s linear forwards;
+    }
+    @keyframes toast-in  { from { transform: translateX(110%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes toast-out { from { opacity: 1; max-height: 80px; margin-bottom: 0; } to { opacity: 0; max-height: 0; padding-top: 0; padding-bottom: 0; margin-bottom: -5px; } }
+    @keyframes toast-bar { from { width: 100%; } to { width: 0%; } }
+
     /* ── LAYOUT ── */
     .layout { display: grid; grid-template-columns: 280px 1fr 300px; height: calc(100vh - 48px); }
 
@@ -88,7 +119,6 @@
     .rider-row { display: none; align-items: center; gap: 6px; padding: 5px 10px; border-bottom: 1px solid var(--border); background: rgba(79,159,255,0.04); flex-shrink: 0; position: relative; }
     .rider-row.visible { display: flex; }
     .rider-label { font-size: 0.68rem; color: var(--text-dim); letter-spacing: 1px; white-space: nowrap; font-weight: 600; text-transform: uppercase; flex-shrink: 0; }
-
     .rider-picker-btn {
       flex: 1; display: flex; align-items: center; gap: 6px;
       background: var(--surface3); border: 1px solid var(--border2);
@@ -97,34 +127,24 @@
     }
     .rider-picker-btn:hover { border-color: var(--accent); }
     .rider-picker-btn.open { border-color: var(--accent); }
-
     .rider-thumb { width: 24px; height: 24px; flex-shrink: 0; background: #000; border-radius: 1px; overflow: hidden; display: flex; align-items: center; justify-content: center; isolation: isolate; }
     .rider-thumb img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: screen; display: block; }
-
     .rider-picker-name { flex: 1; font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
     .rider-picker-cost { font-family: 'Share Tech Mono', monospace; font-size: 0.62rem; color: var(--gold); flex-shrink: 0; }
     .rider-picker-arrow { font-size: 0.5rem; color: var(--text-dim); flex-shrink: 0; }
-
     .rider-popup {
       display: none; position: absolute; top: 100%; left: 0; right: 0;
-      background: var(--surface2); border: 1px solid var(--border2);
-      border-top: none; z-index: 100;
-      max-height: 220px; overflow-y: auto;
+      background: var(--surface2); border: 1px solid var(--border2); border-top: none;
+      z-index: 100; max-height: 220px; overflow-y: auto;
       scrollbar-width: thin; scrollbar-color: var(--border2) transparent;
     }
     .rider-popup.open { display: block; }
     .rider-popup::-webkit-scrollbar { width: 4px; }
     .rider-popup::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-
-    .rider-popup-item {
-      display: flex; align-items: center; gap: 6px;
-      padding: 5px 8px; cursor: pointer;
-      transition: background 0.1s; border-bottom: 1px solid var(--border);
-    }
+    .rider-popup-item { display: flex; align-items: center; gap: 6px; padding: 5px 8px; cursor: pointer; transition: background 0.1s; border-bottom: 1px solid var(--border); }
     .rider-popup-item:last-child { border-bottom: none; }
     .rider-popup-item:hover { background: var(--surface3); }
     .rider-popup-item.selected { background: rgba(79,159,255,0.1); }
-
     .rider-popup-thumb { width: 28px; height: 28px; flex-shrink: 0; background: #000; border-radius: 1px; overflow: hidden; display: flex; align-items: center; justify-content: center; isolation: isolate; }
     .rider-popup-thumb img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: screen; display: block; }
     .rider-popup-name { flex: 1; font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: var(--text); }
@@ -145,16 +165,12 @@
     .enemy-grid-wrap { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 6px 8px; min-height: 0; scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
     .enemy-grid-wrap::-webkit-scrollbar { width: 4px; }
     .enemy-grid-wrap::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-
     .grid-section-label { font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; padding: 8px 2px 5px; border-top: 1px solid var(--border); margin-top: 4px; }
     .grid-section-label:first-child { border-top: none; margin-top: 0; padding-top: 2px; }
-
     .enemy-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 4px; width: 100%; }
-
     .enemy-card { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 5px 2px 4px; background: var(--bg); border: 1px solid var(--border); border-radius: 3px; cursor: pointer; transition: border-color 0.12s, transform 0.12s; user-select: none; overflow: hidden; min-width: 0; }
     .enemy-card:hover { border-color: var(--border2); transform: translateY(-1px); }
     .enemy-card.selected { border-color: var(--accent) !important; box-shadow: 0 0 8px rgba(79,159,255,0.25); }
-
     .tier-bronze   .enemy-card { border-color: rgba(205,127,50,0.25); }
     .tier-silver   .enemy-card { border-color: rgba(176,184,200,0.2); }
     .tier-gold     .enemy-card { border-color: rgba(245,197,66,0.25); }
@@ -162,10 +178,8 @@
     .tier-titanium .enemy-card { border-color: rgba(136,153,187,0.2); }
     .tier-uranium  .enemy-card { border-color: rgba(57,232,122,0.2); }
     .tier-insanium .enemy-card { border-color: rgba(255,76,76,0.2); }
-
     .card-portrait-wrap { width: 46px; height: 46px; flex-shrink: 0; background: #000; border-radius: 1px; overflow: hidden; display: flex; align-items: center; justify-content: center; isolation: isolate; }
     .e-portrait { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: screen; display: block; }
-
     .e-name { font-size: 0.47rem; color: var(--text-dim); text-align: center; line-height: 1.2; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 2px; font-family: 'Share Tech Mono', monospace; }
 
     /* ── CLONE SUB ── */
@@ -216,7 +230,6 @@
     .betkiller-grid-wrap { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 6px 8px; min-height: 0; scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
     .betkiller-grid-wrap::-webkit-scrollbar { width: 4px; }
     .betkiller-grid-wrap::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-
     .other-card { display: flex; align-items: center; gap: 10px; padding: 8px 10px; margin-bottom: 4px; background: var(--bg); border: 1px solid var(--border); border-radius: 3px; cursor: pointer; transition: border-color 0.12s; user-select: none; }
     .other-card:hover { border-color: var(--border2); }
     .other-card.selected { border-color: var(--accent) !important; box-shadow: 0 0 8px rgba(79,159,255,0.25); }
@@ -226,17 +239,66 @@
     .other-label { font-size: 0.78rem; font-weight: 700; color: var(--text); letter-spacing: 1px; text-transform: uppercase; }
     .other-sub { font-size: 0.52rem; color: var(--text-mute); font-family: 'Share Tech Mono', monospace; }
 
+    /* ── SUGGEST SUB ── */
+    .suggest-sub { display: none; flex-direction: column; flex: 1; overflow: hidden; min-height: 0; }
+    .suggest-sub.visible { display: flex; }
+    .suggest-body { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 20px 16px; }
+    .suggest-title { font-size: 1rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+    .suggest-desc { font-size: 0.78rem; color: var(--text-dim); text-align: center; line-height: 1.4; max-width: 200px; }
+    .suggest-input-wrap { width: 100%; }
+    .suggest-input {
+      width: 100%; background: var(--surface3); border: 1px solid var(--border2);
+      color: var(--text); font-family: 'Share Tech Mono', monospace;
+      font-size: 0.68rem; padding: 8px 10px; border-radius: 3px; outline: none;
+    }
+    .suggest-input:focus { border-color: var(--accent); }
+    .suggest-btn {
+      padding: 9px 28px; background: var(--accent); border: none; color: #000;
+      font-family: 'Rajdhani', sans-serif; font-size: 0.95rem; font-weight: 700;
+      letter-spacing: 3px; cursor: pointer; text-transform: uppercase;
+      border-radius: 3px; transition: all 0.1s; width: 100%;
+    }
+    .suggest-btn:hover { background: #80c0ff; }
+    .suggest-btn:active { transform: scale(0.97); }
+
+    /* ── BROADCASTER SECTION ── */
+    .broadcaster-section {
+      border-top: 1px solid var(--border); background: var(--surface2);
+      flex-shrink: 0; padding: 7px 10px;
+    }
+    .broadcaster-label {
+      font-size: 0.58rem; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--gold); font-weight: 700; display: block; margin-bottom: 6px;
+    }
+    .broadcaster-controls { display: flex; flex-direction: column; gap: 5px; }
+    .bc-user-input {
+      width: 100%; background: var(--surface3); border: 1px solid var(--border2);
+      color: var(--text); font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem; padding: 4px 8px; border-radius: 2px; outline: none;
+    }
+    .bc-user-input:focus { border-color: var(--accent); }
+    .broadcaster-row { display: flex; gap: 4px; align-items: center; }
+    .bc-btn {
+      padding: 5px 10px; border: none; border-radius: 2px;
+      font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; font-weight: 700;
+      letter-spacing: 1.5px; cursor: pointer; text-transform: uppercase;
+      transition: background 0.1s; flex-shrink: 0;
+    }
+    .bc-btn.give { background: var(--green); color: #000; }
+    .bc-btn.give:hover { background: #5fffaa; }
+    .bc-btn.set  { background: var(--gold); color: #000; }
+    .bc-btn.set:hover  { background: #ffd966; }
+
     /* ── PLAYER ── */
     .player-panel { display: flex; flex-direction: column; background: #000; }
     .player-wrap { flex: 1; position: relative; background: #000; overflow: hidden; }
     .player-wrap iframe { width: 100%; height: 100%; display: block; border: none; }
+    /* footer now has only channel name + clock — no external link */
     .player-footer { display: flex; align-items: center; justify-content: space-between; padding: 7px 16px; background: var(--surface); border-top: 1px solid var(--border); font-size: 0.7rem; color: var(--text-dim); font-family: 'Share Tech Mono', monospace; letter-spacing: 1px; flex-shrink: 0; }
     .channel-name { color: var(--accent); font-size: 0.75rem; text-transform: uppercase; }
 
-    /* ── CHAT ── */
+    /* ── CHAT (no header) ── */
     .chat-panel { display: flex; flex-direction: column; background: var(--surface); border-left: 1px solid var(--border); }
-    .chat-header { display: flex; align-items: center; justify-content: space-between; padding: 9px 14px; border-bottom: 1px solid var(--border); font-size: 0.72rem; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; font-family: 'Share Tech Mono', monospace; flex-shrink: 0; }
-    .chat-header-label { color: var(--accent); }
     .chat-wrap { flex: 1; overflow: hidden; }
     .chat-wrap iframe { width: 100%; height: 100%; border: none; }
     .chat-footer { padding: 8px 14px; border-top: 1px solid var(--border); font-size: 0.65rem; color: var(--text-dim); letter-spacing: 1px; display: flex; align-items: center; gap: 8px; font-family: 'Share Tech Mono', monospace; flex-shrink: 0; }
@@ -246,47 +308,25 @@
     @keyframes pulse { 0%, 100% { opacity:1; transform:scale(1); } 50% { opacity:0.4; transform:scale(0.8); } }
 
     /* ── AUTH BAR ── */
-    .auth-bar {
-      display: flex; align-items: center; gap: 8px;
-      padding: 8px 12px; border-bottom: 1px solid var(--border);
-      background: var(--surface2); flex-shrink: 0;
-    }
+    .auth-bar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--border); background: var(--surface2); flex-shrink: 0; }
     .twitch-login-btn {
       flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
       padding: 7px 10px; border-radius: 3px; border: none; cursor: pointer;
-      background: #9147ff; color: #fff;
-      font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; font-weight: 700;
-      letter-spacing: 1.5px; text-transform: uppercase; transition: background 0.15s;
+      background: #9147ff; color: #fff; font-family: 'Rajdhani', sans-serif;
+      font-size: 0.85rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; transition: background 0.15s;
     }
     .twitch-login-btn:hover { background: #a970ff; }
     .twitch-login-btn svg { flex-shrink: 0; }
-
     .auth-user { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
     .auth-avatar { width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border2); flex-shrink: 0; object-fit: cover; }
-    .auth-avatar-placeholder {
-      width: 28px; height: 28px; border-radius: 50%;
-      background: #9147ff33; border: 1px solid #9147ff55;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.75rem; color: #a970ff; font-weight: 700; flex-shrink: 0;
-    }
+    .auth-avatar-placeholder { width: 28px; height: 28px; border-radius: 50%; background: #9147ff33; border: 1px solid #9147ff55; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: #a970ff; font-weight: 700; flex-shrink: 0; }
     .auth-username { font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
     .auth-username span { color: #a970ff; }
-    .auth-logout-btn {
-      background: transparent; border: 1px solid var(--border2);
-      color: var(--text-dim); font-family: 'Share Tech Mono', monospace;
-      font-size: 0.58rem; padding: 4px 8px; border-radius: 2px;
-      cursor: pointer; letter-spacing: 1px; text-transform: uppercase;
-      transition: all 0.15s; flex-shrink: 0; white-space: nowrap;
-    }
+    .auth-logout-btn { background: transparent; border: 1px solid var(--border2); color: var(--text-dim); font-family: 'Share Tech Mono', monospace; font-size: 0.58rem; padding: 4px 8px; border-radius: 2px; cursor: pointer; letter-spacing: 1px; text-transform: uppercase; transition: all 0.15s; flex-shrink: 0; white-space: nowrap; }
     .auth-logout-btn:hover { border-color: var(--text-dim); color: var(--text); }
 
     /* panel lock overlay */
-    .panel-lock {
-      flex: 1; display: none; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 10px; padding: 20px; text-align: center;
-      color: var(--text-dim);
-    }
+    .panel-lock { flex: 1; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 20px; text-align: center; color: var(--text-dim); }
     .panel-lock.visible { display: flex; }
     .panel-lock-icon { font-size: 2rem; opacity: 0.25; }
     .panel-lock-text { font-size: 0.8rem; line-height: 1.5; max-width: 200px; }
@@ -297,10 +337,12 @@
   <header>
     <div class="logo">Clone Drone <span>Twitch Mode</span></div>
     <div class="header-right">
-      <!-- Single live badge — no duplicate clock in header -->
       <div class="live-badge" id="live-badge">OFFLINE</div>
     </div>
   </header>
+
+  <!-- Toast notification container (fixed overlay, top-right) -->
+  <div class="toast-container" id="toast-container"></div>
 
   <div class="layout">
 
@@ -319,7 +361,7 @@
         </div>
       </div>
 
-      <!-- lock screen shown when logged out OR mod offline OR not in twitch mode -->
+      <!-- Lock screen — shown when logged out / mod offline / not in twitch mode -->
       <div class="panel-lock visible" id="panel-lock">
         <div class="panel-lock-icon">&#128274;</div>
         <div class="panel-lock-text">Log in with Twitch to spawn enemies, place bets and track your coins.</div>
@@ -336,22 +378,18 @@
         <button class="tab-btn active" data-tab="spawn" onclick="switchTab('spawn')">Spawn <span class="tab-arrow">&#9658;</span></button>
         <button class="tab-btn" data-tab="bettier"   onclick="switchTab('bettier')">Bet Tier <span class="tab-arrow">&#9658;</span></button>
         <button class="tab-btn" data-tab="betkiller" onclick="switchTab('betkiller')">Bet Killer <span class="tab-arrow">&#9658;</span></button>
+        <button class="tab-btn" data-tab="suggest"   onclick="switchTab('suggest')">Suggest <span class="tab-arrow">&#9658;</span></button>
       </div>
 
       <!-- ─ SPAWN ─ -->
       <div class="spawn-sub visible" id="tab-spawn">
-
         <div class="spawn-config">
           <div class="portrait-wrap"><img id="preview-img" src="" alt=""></div>
           <div class="enemy-select-wrap">
             <select class="enemy-select" id="enemy-dropdown" onchange="onDropdownChange()"></select>
           </div>
-          <div class="cost-tag">
-            <img src="images/coin.png" alt=""><span id="sel-cost-num">100</span>
-          </div>
+          <div class="cost-tag"><img src="images/coin.png" alt=""><span id="sel-cost-num">100</span></div>
         </div>
-
-        <!-- rider row — only visible for raptor-type enemies -->
         <div class="rider-row" id="rider-row">
           <span class="rider-label">Rider:</span>
           <div class="rider-picker-btn" id="rider-picker-btn" onclick="toggleRiderPopup()">
@@ -362,7 +400,6 @@
           </div>
           <div class="rider-popup" id="rider-popup"></div>
         </div>
-
         <div class="check-go-row">
           <div class="check-group">
             <label class="check-label"><input type="checkbox" id="chk-armor" onchange="onArmorChange()"> Armor</label>
@@ -370,7 +407,6 @@
           </div>
           <button class="go-btn" id="go-btn" onclick="doSpawn()">SPAWN</button>
         </div>
-
         <div class="enemy-grid-wrap" id="enemy-grid-wrap"></div>
       </div>
 
@@ -414,29 +450,59 @@
         <div class="betkiller-grid-wrap" id="betkiller-grid-wrap"></div>
       </div>
 
+      <!-- ─ SUGGEST ─ -->
+      <div class="suggest-sub" id="tab-suggest">
+        <div class="suggest-body">
+          <div class="suggest-title">Suggest Content</div>
+          <div class="suggest-desc">Paste a Steam Workshop link or just the numeric ID to suggest a level or mod.</div>
+          <div class="suggest-input-wrap">
+            <input type="text" class="suggest-input" id="suggest-input"
+              placeholder="Level link or ID"
+              oninput="onSuggestInput()">
+          </div>
+          <label class="check-label" style="align-self:flex-start;">
+            <input type="checkbox" id="chk-mod-suggest" onchange="onModSuggestChange()"> This is a mod
+          </label>
+          <button class="suggest-btn" id="suggest-btn" onclick="doSuggest()">SUGGEST</button>
+        </div>
+      </div>
+
+      <!-- ─ BROADCASTER CONTROLS (only shown to broadcaster when in twitch mode) ─ -->
+      <div class="broadcaster-section" id="broadcaster-section" style="display:none;">
+        <span class="broadcaster-label">&#9889; Streamer Controls</span>
+        <div class="broadcaster-controls">
+          <input type="text" class="bc-user-input" id="bc-username"
+            placeholder="@username (blank = everyone)">
+          <div class="broadcaster-row">
+            <input class="bet-input" id="bc-amount" type="number" min="1" value="100" style="flex:1; min-width:0;">
+            <button class="bc-btn give" id="bc-give-btn" onclick="doBroadcasterGive()">GIVE</button>
+            <button class="bc-btn set"  id="bc-set-btn"  onclick="doBroadcasterSet()">SET</button>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- ══ PLAYER ══ -->
     <div class="player-panel">
       <div class="player-wrap">
-        <!-- src is set dynamically after relay connects to the streamer's channel -->
         <iframe id="player-iframe" src="about:blank" allowfullscreen title="Twitch Stream"></iframe>
       </div>
+      <!-- Footer: just channel name + clock. No external link (that's in chat footer). -->
       <div class="player-footer">
         <span class="channel-name">&#9654; <span id="footer-channel">&#8212;</span></span>
         <span id="clock2">&#8212;</span>
-        <a id="footer-link" href="https://twitch.tv/" target="_blank" rel="noopener" style="color:var(--text-dim);text-decoration:none;">twitch.tv/&#8212;</a>
       </div>
     </div>
 
-    <!-- ══ CHAT ══ -->
+    <!-- ══ CHAT (no header bar above it) ══ -->
     <div class="chat-panel">
-      <div class="chat-header"><span class="chat-header-label">Live Chat</span><span>IRC</span></div>
       <div class="chat-wrap">
-        <!-- src is set dynamically after relay connects -->
         <iframe id="chat-iframe" src="about:blank" title="Twitch Chat"></iframe>
       </div>
-      <div class="chat-footer">Open in <a id="chat-link" href="https://twitch.tv/" target="_blank" rel="noopener">twitch.tv &#8599;</a></div>
+      <div class="chat-footer">
+        Open in <a id="chat-link" href="https://twitch.tv/" target="_blank" rel="noopener">twitch.tv &#8599;</a>
+      </div>
     </div>
 
   </div>
@@ -446,13 +512,11 @@
   //  DATA
   // ==========================================================================
   const ENEMIES = [
-    // ── BRONZE ──
     { id:'sword1',            name:'Sword 1',        cost:100,  gameTier:'bronze',   canKill:true  },
     { id:'bow1',              name:'Bow 1',          cost:100,  gameTier:'bronze',   canKill:true  },
     { id:'spear1',            name:'Spear 1',        cost:100,  gameTier:'bronze',   canKill:true  },
     { id:'mindspacespear',    name:'MS Spear',       cost:100,  gameTier:'bronze',   canKill:true  },
     { id:'zombie1',           name:'Zombie 1',       cost:150,  gameTier:'bronze',   canKill:true  },
-    // ── SILVER ──
     { id:'sword2',            name:'Sword 2',        cost:200,  gameTier:'silver',   canKill:true  },
     { id:'bow2',              name:'Bow 2',          cost:300,  gameTier:'silver',   canKill:true  },
     { id:'spear2',            name:'Spear 2',        cost:250,  gameTier:'silver',   canKill:true  },
@@ -461,7 +525,6 @@
     { id:'mindspacehammer',   name:'MS Hammer',      cost:300,  gameTier:'silver',   canKill:true  },
     { id:'zombie2',           name:'Zombie 2',       cost:300,  gameTier:'silver',   canKill:true  },
     { id:'kickbot',           name:'Kickbot',        cost:400,  gameTier:'silver',   canKill:false },
-    // ── GOLD ──
     { id:'sword3',            name:'Sword 3',        cost:500,  gameTier:'gold',     canKill:true  },
     { id:'bow3',              name:'Bow 3',          cost:500,  gameTier:'gold',     canKill:true  },
     { id:'spear3',            name:'Spear 3',        cost:500,  gameTier:'gold',     canKill:true  },
@@ -474,7 +537,6 @@
     { id:'jetpack1',          name:'Jetpack 1',      cost:500,  gameTier:'gold',     canKill:true  },
     { id:'armorbot',          name:'Armorbot',       cost:500,  gameTier:'gold',     canKill:false },
     { id:'spidertron5000',    name:'Spider 5000',    cost:500,  gameTier:'gold',     canKill:true  },
-    // ── DIAMOND ──
     { id:'sword4',            name:'Sword 4',        cost:700,  gameTier:'diamond',  canKill:true  },
     { id:'bow4',              name:'Bow 4',          cost:700,  gameTier:'diamond',  canKill:true  },
     { id:'spear4',            name:'Spear 4',        cost:800,  gameTier:'diamond',  canKill:true  },
@@ -492,7 +554,6 @@
     { id:'fleetanalysisbot2', name:'Fleet AB 2',     cost:1250, gameTier:'diamond',  canKill:true  },
     { id:'fleetanalysisbot4', name:'Fleet AB 4',     cost:1250, gameTier:'diamond',  canKill:true  },
     { id:'flameraptor',       name:'Flame Raptor',   cost:1000, gameTier:'diamond',  canKill:true,  isRaptor:true },
-    // ── TITANIUM ──
     { id:'sword5',            name:'Sword 5',        cost:1400, gameTier:'titanium', canKill:true  },
     { id:'bow5',              name:'Bow 5',          cost:1200, gameTier:'titanium', canKill:true  },
     { id:'hammer5',           name:'Hammer 5',       cost:1200, gameTier:'titanium', canKill:true  },
@@ -501,11 +562,9 @@
     { id:'zombieraptor',      name:'Zombie Raptor',  cost:1000, gameTier:'titanium', canKill:true,  isRaptor:true },
     { id:'spidertron6000',    name:'Spider 6000',    cost:1000, gameTier:'titanium', canKill:true  },
     { id:'fleetanalysisbot3', name:'Fleet AB 3',     cost:2000, gameTier:'titanium', canKill:true  },
-    // ── URANIUM ──
     { id:'emperor1',          name:'Emperor 1',      cost:2200, gameTier:'uranium',  canKill:true  },
     { id:'fleetoverseer',     name:'Fleet Overseer', cost:2500, gameTier:'uranium',  canKill:true,  freeArmor:true },
     { id:'spidertron7000',    name:'Spider 7000',    cost:1800, gameTier:'uranium',  canKill:true  },
-    // ── INSANIUM ──
     { id:'emperor2',          name:'Emperor 2',      cost:2800, gameTier:'insanium', canKill:true  },
   ];
 
@@ -523,10 +582,16 @@
     'flameraptor','laserraptor','zombieraptor',
     'fleetcaptain','fleetoverseer',
     'spidertron5000','spidertron6000','spidertron7000',
-    'armorbot',
-    'emperor1','emperor2',
+    'armorbot','emperor1','emperor2',
     'mindspacesword','mindspacespear','mindspacehammer',
     'zombiefleetcaptain',
+  ]);
+
+  // Twitch emotes the game appends to chat messages — stripped from toasts
+  const GAME_EMOTES = new Set([
+    'KappaWealth','NotLikeThis','BabyRage','SSSsss','KomodoHype','cmonBruh',
+    'SabaPing','BloodTrail','Kappa','PogChamp','Kreygasm','4Head','ResidentSleeper',
+    'FailFish','WutFace','BibleThump','OneHand','HeyGuys'
   ]);
 
   const PORTRAIT = 'EnemyPortraits/';
@@ -551,13 +616,12 @@
     if (armor && rider) riderCost *= 2;
     return base + riderCost;
   }
-
   function updateCostDisplay() {
     document.getElementById('sel-cost-num').textContent = getTotalCost();
   }
 
   // ==========================================================================
-  //  SPAWN GRID — rebuilt from ENEMIES array (gameTier may be patched by server)
+  //  SPAWN GRID
   // ==========================================================================
   function buildSpawnGrid() {
     const wrap = document.getElementById('enemy-grid-wrap');
@@ -588,8 +652,7 @@
         name.className = 'e-name';
         name.title = enemy.name;
         name.textContent = enemy.name;
-        card.appendChild(pw);
-        card.appendChild(name);
+        card.appendChild(pw); card.appendChild(name);
         card.onclick = () => selectEnemy(enemy.id);
         grid.appendChild(card);
       });
@@ -601,22 +664,15 @@
     const enemy = ENEMIES.find(e => e.id === id);
     if (!enemy) return;
     selectedEnemy = enemy;
-
     document.querySelectorAll('#enemy-grid-wrap .enemy-card').forEach(c => c.classList.remove('selected'));
     const card = document.querySelector('#enemy-grid-wrap .enemy-card[data-id="' + id + '"]');
     if (card) { card.classList.add('selected'); card.scrollIntoView({ block: 'nearest' }); }
-
     const armor = document.getElementById('chk-armor').checked;
     document.getElementById('preview-img').src = portrait(id, armor);
     document.getElementById('enemy-dropdown').value = id;
-
     const riderRow = document.getElementById('rider-row');
-    if (enemy.isRaptor) {
-      riderRow.classList.add('visible');
-    } else {
-      riderRow.classList.remove('visible');
-      setRider(null);
-    }
+    if (enemy.isRaptor) { riderRow.classList.add('visible'); }
+    else { riderRow.classList.remove('visible'); setRider(null); }
     updateCostDisplay();
   }
 
@@ -632,6 +688,7 @@
       document.getElementById('rider-thumb-img').src = portrait(selectedRiderId, armor);
       document.getElementById('rider-picker-cost').textContent = '+' + (armor ? rider.cost * 2 : rider.cost);
     }
+    // Update popup items that are currently in the DOM
     document.querySelectorAll('.rider-popup-item[data-id]').forEach(item => {
       const rid = item.dataset.id;
       if (!rid) return;
@@ -658,8 +715,7 @@
       og.label = tier.name;
       list.forEach(e => {
         const opt = document.createElement('option');
-        opt.value = e.id;
-        opt.textContent = e.name;
+        opt.value = e.id; opt.textContent = e.name;
         og.appendChild(opt);
       });
       dd.appendChild(og);
@@ -668,14 +724,15 @@
   function onDropdownChange() { selectEnemy(document.getElementById('enemy-dropdown').value); }
 
   // ==========================================================================
-  //  RIDER POPUP — rebuilt each time state arrives, filtered to spawnable enemies
+  //  RIDER POPUP
+  //  Fix: reads armor checkbox at build time so portraits/prices are correct
+  //  even when popup is rebuilt while armor is already checked.
   // ==========================================================================
   function buildRiderPopup(spawnableIds) {
-    // spawnableIds: array of enemy IDs currently allowed, or null/undefined for init (show all)
-    const popup = document.getElementById('rider-popup');
+    const popup  = document.getElementById('rider-popup');
+    const armor  = document.getElementById('chk-armor').checked;  // ← FIX
     popup.innerHTML = '';
 
-    // "None" item
     const noneItem = document.createElement('div');
     noneItem.className = 'rider-popup-item none-item';
     noneItem.dataset.id = '';
@@ -687,27 +744,26 @@
     popup.appendChild(noneItem);
 
     let rideable = ENEMIES.filter(e => !RIDER_EXCLUDED.has(e.id));
-    if (spawnableIds && spawnableIds.length > 0) {
+    if (spawnableIds && spawnableIds.length > 0)
       rideable = rideable.filter(e => spawnableIds.includes(e.id));
-    }
 
     rideable.forEach(e => {
       const item = document.createElement('div');
       item.className = 'rider-popup-item';
       item.dataset.id = e.id;
+      const itemCost = armor ? e.cost * 2 : e.cost;           // ← FIX
+      const imgSrc   = portrait(e.id, armor);                 // ← FIX
       item.innerHTML =
-        '<div class="rider-popup-thumb"><img src="' + portrait(e.id, false) + '" alt="' + e.name + '" onerror="this.style.opacity=.15"></div>' +
+        '<div class="rider-popup-thumb"><img src="' + imgSrc + '" alt="' + e.name + '" onerror="this.style.opacity=.15"></div>' +
         '<span class="rider-popup-name">' + e.name + '</span>' +
-        '<span class="rider-popup-price">+' + e.cost + '</span>';
+        '<span class="rider-popup-price">+' + itemCost + '</span>';
       item.onclick = () => { setRider(e.id); closeRiderPopup(); };
       popup.appendChild(item);
     });
 
-    // If the currently selected rider is no longer available, reset
     if (selectedRiderId && !rideable.find(e => e.id === selectedRiderId)) {
       setRider(null);
     } else {
-      // Re-apply highlight
       popup.querySelectorAll('.rider-popup-item').forEach(item => {
         item.classList.toggle('selected', item.dataset.id === (selectedRiderId || ''));
       });
@@ -718,11 +774,9 @@
     selectedRiderId = id || null;
     const enemy = id ? ENEMIES.find(e => e.id === id) : null;
     const armor = document.getElementById('chk-armor').checked;
-
     document.getElementById('rider-thumb-img').src = enemy ? portrait(id, armor) : NO_RIDER;
     document.getElementById('rider-picker-name').textContent = enemy ? enemy.name : 'None';
     document.getElementById('rider-picker-cost').textContent = enemy ? '+' + (armor ? enemy.cost * 2 : enemy.cost) : '';
-
     document.querySelectorAll('.rider-popup-item').forEach(item => {
       item.classList.toggle('selected', item.dataset.id === (id || ''));
     });
@@ -736,12 +790,10 @@
     popup.classList.toggle('open', !isOpen);
     btn.classList.toggle('open', !isOpen);
   }
-
   function closeRiderPopup() {
     document.getElementById('rider-popup').classList.remove('open');
     document.getElementById('rider-picker-btn').classList.remove('open');
   }
-
   document.addEventListener('click', e => {
     const row = document.getElementById('rider-row');
     if (row && !row.contains(e.target)) closeRiderPopup();
@@ -753,44 +805,33 @@
   function buildKillerGrid() {
     const wrap = document.getElementById('betkiller-grid-wrap');
     wrap.innerHTML = '';
-
     const othCard = document.createElement('div');
-    othCard.className = 'other-card selected';
-    othCard.id = 'bk-other-card';
+    othCard.className = 'other-card selected'; othCard.id = 'bk-other-card';
     othCard.innerHTML =
       '<div class="other-card-img"><img src="' + NO_RIDER + '" alt="Other"></div>' +
       '<div class="other-card-text"><div class="other-label">Other</div><div class="other-sub">Hazard / Trap / Environment</div></div>';
     othCard.onclick = () => selectKiller(null);
     wrap.appendChild(othCard);
-
     GAME_TIERS.forEach(tier => {
       const enemies = ENEMIES.filter(e => e.gameTier === tier.id && e.canKill);
       if (!enemies.length) return;
       const lbl = document.createElement('div');
-      lbl.className = 'grid-section-label';
-      lbl.style.color = tier.color;
+      lbl.className = 'grid-section-label'; lbl.style.color = tier.color;
       lbl.textContent = '\u2014 ' + tier.name + ' \u2014';
       wrap.appendChild(lbl);
       const grid = document.createElement('div');
       grid.className = 'enemy-grid';
       enemies.forEach(enemy => {
         const card = document.createElement('div');
-        card.className = 'enemy-card';
-        card.dataset.id = enemy.id;
-        const pw = document.createElement('div');
-        pw.className = 'card-portrait-wrap';
-        const img = document.createElement('img');
-        img.className = 'e-portrait';
-        img.src = portrait(enemy.id, false);
-        img.alt = enemy.name;
+        card.className = 'enemy-card'; card.dataset.id = enemy.id;
+        const pw = document.createElement('div'); pw.className = 'card-portrait-wrap';
+        const img = document.createElement('img'); img.className = 'e-portrait';
+        img.src = portrait(enemy.id, false); img.alt = enemy.name;
         img.onerror = () => { img.style.opacity = '0.15'; };
         pw.appendChild(img);
         const name = document.createElement('div');
-        name.className = 'e-name';
-        name.title = enemy.name;
-        name.textContent = enemy.name;
-        card.appendChild(pw);
-        card.appendChild(name);
+        name.className = 'e-name'; name.title = enemy.name; name.textContent = enemy.name;
+        card.appendChild(pw); card.appendChild(name);
         card.onclick = () => selectKiller(enemy.id);
         grid.appendChild(card);
       });
@@ -802,7 +843,6 @@
     document.querySelectorAll('#betkiller-grid-wrap .enemy-card').forEach(c => c.classList.remove('selected'));
     const other = document.getElementById('bk-other-card');
     if (other) other.classList.remove('selected');
-
     if (!id) {
       selectedKillerEnemy = null;
       if (other) other.classList.add('selected');
@@ -820,21 +860,19 @@
   }
 
   // ==========================================================================
-  //  TIER GRID (bet tier)
+  //  TIER GRID
   // ==========================================================================
   function buildTierGrid() {
     const grid = document.getElementById('tier-grid');
     GAME_TIERS.forEach(t => {
       const row = document.createElement('div');
-      row.className = 'tier-row';
-      row.dataset.id = t.id;
+      row.className = 'tier-row'; row.dataset.id = t.id;
       row.innerHTML =
         '<div class="tier-dot" style="background:' + t.color + ';box-shadow:0 0 6px ' + t.color + '55;"></div>' +
         '<span class="tier-name" style="color:' + t.color + '">' + t.name + '</span>';
       row.onclick = () => {
         document.querySelectorAll('.tier-row').forEach(r => r.classList.remove('selected'));
-        row.classList.add('selected');
-        selectedTier = t.id;
+        row.classList.add('selected'); selectedTier = t.id;
       };
       grid.appendChild(row);
     });
@@ -849,14 +887,11 @@
     for (let i = 0; i < cloneMax; i++) {
       const img = document.createElement('img');
       img.className = 'clone-heart' + (i >= (cloneMax - cloneUsed) ? ' used' : '');
-      img.src = 'images/clone.webp';
-      img.alt = 'life';
+      img.src = 'images/clone.webp'; img.alt = 'life';
       row.appendChild(img);
     }
     document.getElementById('clone-remaining').textContent = cloneMax - cloneUsed;
     document.getElementById('clone-max').textContent = cloneMax;
-
-    // Issue #7: grey out CLONE! button when all lives are used
     const cloneBtn = document.getElementById('clone-go-btn');
     if (cloneBtn) {
       const exhausted = cloneUsed >= cloneMax;
@@ -873,9 +908,120 @@
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     const btn = document.querySelector('[data-tab="' + name + '"]');
     if (btn) btn.classList.add('active');
-    document.querySelectorAll('.spawn-sub,.clone-sub,.bettier-sub,.betkiller-sub').forEach(p => p.classList.remove('visible'));
+    document.querySelectorAll('.spawn-sub,.clone-sub,.bettier-sub,.betkiller-sub,.suggest-sub')
+      .forEach(p => p.classList.remove('visible'));
     const panel = document.getElementById('tab-' + name);
     if (panel) panel.classList.add('visible');
+  }
+
+  // ==========================================================================
+  //  SUGGEST TAB
+  // ==========================================================================
+  function onModSuggestChange() {
+    const isMod = document.getElementById('chk-mod-suggest').checked;
+    document.getElementById('suggest-input').placeholder = isMod ? 'Mod ID' : 'Level link or ID';
+  }
+
+  function onSuggestInput() {
+    // Live preview of extracted ID in placeholder area — optional; nothing needed here
+  }
+
+  function parseSuggestInput(raw, isMod) {
+    const trimmed = raw.trim();
+    if (isMod) return trimmed; // Mod IDs are arbitrary strings, accept as-is
+
+    // Try to extract numeric ID from Steam workshop URL
+    // Handles: ?id=12345  or  &id=12345  with any trailing parameters
+    const urlMatch = trimmed.match(/[?&]id=(\d+)/);
+    if (urlMatch) return urlMatch[1];
+
+    // Try bare number (possibly with trailing garbage like &searchtext=blah)
+    const numMatch = trimmed.match(/^(\d+)/);
+    if (numMatch) return numMatch[1];
+
+    // Return trimmed as-is and let the game reject it
+    return trimmed;
+  }
+
+  function doSuggest() {
+    if (!_modOnline) return;
+    const isMod = document.getElementById('chk-mod-suggest').checked;
+    const raw   = document.getElementById('suggest-input').value;
+    if (!raw.trim()) { showToast('Enter a level link, ID, or mod ID first.'); return; }
+    const levelId = parseSuggestInput(raw, isMod);
+    if (!levelId) { showToast('Could not extract a valid ID from that input.'); return; }
+    relaySend({ type: 'suggest', username: twitchUser.login, levelId: levelId, modSuggest: isMod });
+    const btn = document.getElementById('suggest-btn');
+    if (btn) {
+      const orig = btn.textContent, origBg = btn.style.background;
+      btn.textContent = 'SENT!'; btn.style.background = '#4f9fff';
+      setTimeout(() => { btn.textContent = orig; btn.style.background = origBg; }, 700);
+    }
+  }
+
+  // ==========================================================================
+  //  BROADCASTER COIN CONTROLS
+  // ==========================================================================
+  function isBroadcaster() {
+    return twitchUser && _wsChannel &&
+           twitchUser.login.toLowerCase() === _wsChannel.toLowerCase();
+  }
+
+  function updateBroadcasterVisibility() {
+    const section = document.getElementById('broadcaster-section');
+    if (!section) return;
+    section.style.display = (isBroadcaster() && _inTwitchMode) ? '' : 'none';
+  }
+
+  function doBroadcasterGive() {
+    if (!_modOnline || !_inTwitchMode) return;
+    const userRaw = document.getElementById('bc-username').value.trim().replace(/^@/, '').toLowerCase();
+    const amount  = parseInt(document.getElementById('bc-amount').value) || 0;
+    if (amount <= 0) { showToast('Enter a valid coin amount.'); return; }
+    const cmd = userRaw ? ('!givecoins ' + userRaw + ' ' + amount) : ('!givecoins ' + amount);
+    relaySend({ type: 'streamerCommand', username: twitchUser.login, command: cmd });
+    flashButton('bc-give-btn', 'SENT!', '#5fffaa');
+  }
+
+  function doBroadcasterSet() {
+    if (!_modOnline || !_inTwitchMode) return;
+    const userRaw = document.getElementById('bc-username').value.trim().replace(/^@/, '').toLowerCase();
+    const amount  = parseInt(document.getElementById('bc-amount').value) || 0;
+    if (amount < 0) { showToast('Enter a valid coin amount.'); return; }
+    const cmd = userRaw ? ('!setcoins ' + userRaw + ' ' + amount) : ('!setcoins ' + amount);
+    relaySend({ type: 'streamerCommand', username: twitchUser.login, command: cmd });
+    flashButton('bc-set-btn', 'SENT!', '#ffd966');
+  }
+
+  // ==========================================================================
+  //  TOAST NOTIFICATION SYSTEM
+  // ==========================================================================
+  // Strips known Twitch emotes and excess whitespace from game chat messages
+  function cleanGameMessage(msg) {
+    return msg.split(/\s+/)
+      .filter(word => !GAME_EMOTES.has(word))
+      .join(' ')
+      .trim();
+  }
+
+  function showToast(message) {
+    const clean = cleanGameMessage(message);
+    const container = document.getElementById('toast-container');
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML =
+      '<div class="toast-msg">' + clean + '</div>' +
+      '<button class="toast-close" onclick="dismissToast(this.parentElement)">&#215;</button>' +
+      '<div class="toast-bar"></div>';
+    container.appendChild(toast);
+    // Auto-dismiss after 3s (matching the CSS bar animation duration)
+    setTimeout(() => dismissToast(toast), 3000);
+  }
+
+  function dismissToast(el) {
+    if (!el || !el.parentElement) return;
+    el.style.animation = 'toast-out 0.25s ease forwards';
+    setTimeout(() => { if (el.parentElement) el.remove(); }, 250);
   }
 
   // ==========================================================================
@@ -885,32 +1031,25 @@
 
   let _ws           = null;
   let _wsChannel    = null;
+  let _embedsSet    = false;  // FIX: only set iframes once per channel to prevent reload on reconnect
   let _modOnline    = false;
   let _inTwitchMode = false;
   let _simulatedCoins = 0;
   let _cpm          = 0;
   let _coinTimer    = null;
 
-  // ── Stream embeds: set dynamically from channel name ──────────────────────
+  // ── Stream embeds ──────────────────────────────────────────────────────────
   function updateStreamEmbeds(channel) {
     const hn = window.location.hostname;
     const parents = (hn === 'localhost' || hn === '127.0.0.1')
       ? 'parent=localhost&parent=127.0.0.1'
       : 'parent=' + hn;
-
     document.getElementById('player-iframe').src =
       'https://player.twitch.tv/?channel=' + channel + '&' + parents + '&autoplay=true';
     document.getElementById('chat-iframe').src =
       'https://www.twitch.tv/embed/' + channel + '/chat?' + parents + '&darkpopout';
-
     document.getElementById('footer-channel').textContent = channel;
-    const twitchUrl = 'https://twitch.tv/' + channel;
-    const fl = document.getElementById('footer-link');
-    fl.href = twitchUrl;
-    fl.textContent = 'twitch.tv/' + channel;
-    document.getElementById('chat-link').href = twitchUrl;
-
-    // Issue #5: check if streamer is live
+    document.getElementById('chat-link').href = 'https://twitch.tv/' + channel;
     checkLiveStatus(channel);
   }
 
@@ -918,13 +1057,11 @@
     document.getElementById('player-iframe').src = 'about:blank';
     document.getElementById('chat-iframe').src   = 'about:blank';
     document.getElementById('footer-channel').textContent = '\u2014';
-    const fl = document.getElementById('footer-link');
-    fl.href = 'https://twitch.tv/'; fl.textContent = 'twitch.tv/\u2014';
     document.getElementById('chat-link').href = 'https://twitch.tv/';
+    _embedsSet = false;
     updateLiveBadge(false);
   }
 
-  // Issue #5: live badge
   function updateLiveBadge(isLive) {
     const badge = document.getElementById('live-badge');
     if (!badge) return;
@@ -945,15 +1082,20 @@
       updateLiveBadge(!!(data.data && data.data.length > 0));
     } catch {}
   }
-
-  // Re-check live status every 60s while connected
   setInterval(() => { if (_wsChannel && twitchUser) checkLiveStatus(_wsChannel); }, 60000);
 
   // ── Relay connection ───────────────────────────────────────────────────────
   function relayConnect(channel) {
-    if (_ws) { _ws.close(); _ws = null; }
+    if (_ws) { try { _ws.close(); } catch {} _ws = null; }
     _wsChannel = channel.toLowerCase();
-    updateStreamEmbeds(_wsChannel);
+
+    // FIX: only set iframes when channel actually changes — not on every reconnect
+    // This prevents the Twitch player/chat from reloading every 10 min when the
+    // WebSocket drops and reconnects.
+    if (!_embedsSet) {
+      _embedsSet = true;
+      updateStreamEmbeds(_wsChannel);
+    }
 
     _ws = new WebSocket(RELAY_URL + '/viewer?channel=' + _wsChannel);
 
@@ -969,6 +1111,7 @@
     _ws.onclose = () => {
       console.log('[Relay] Disconnected — reconnecting in 3s...');
       setModStatus(false);
+      // Re-use same _wsChannel; _embedsSet stays true so iframes don't reload
       setTimeout(() => { if (_wsChannel) relayConnect(_wsChannel); }, 3000);
     };
 
@@ -993,28 +1136,21 @@
         if (msg.lastState)  applyState(msg.lastState);
         if (twitchUser) relayIdentify();
         break;
-      case 'modOnline':
-        setModStatus(true);
-        break;
-      case 'modOffline':
-        setModStatus(false);
-        break;
-      case 'config':
-        applyConfig(msg);
-        break;
-      case 'state':
-        applyState(msg);
-        break;
+      case 'modOnline':  setModStatus(true);  break;
+      case 'modOffline': setModStatus(false); break;
+      case 'config':     applyConfig(msg);    break;
+      case 'state':      applyState(msg);     break;
       case 'coinUpdate':
         if (twitchUser && msg.username === twitchUser.login.toLowerCase())
           snapCoins(msg.coins);
         break;
       case 'response':
+        // Game status messages routed back from mod instead of going to Twitch chat
         if (twitchUser && msg.username === twitchUser.login.toLowerCase())
-          console.log('[Relay] Response:', msg.message);
+          showToast(msg.message);
         break;
       case 'error':
-        console.warn('[Relay] Error from server:', msg.message);
+        showToast(msg.message || 'An error occurred.');
         break;
     }
   }
@@ -1026,7 +1162,6 @@
     startCoinSimulation();
   }
 
-  // Issue #6 + #9 + #10: full applyState
   function applyState(state) {
     if (typeof state.clonesUsed === 'number') {
       cloneUsed = state.clonesUsed;
@@ -1036,7 +1171,6 @@
     const wasInTwitchMode = _inTwitchMode;
     _inTwitchMode = !!state.inTwitchMode;
 
-    // Issue #6: distinct lock messages for mod-offline vs not-in-twitch-mode
     if (twitchUser && _modOnline) {
       const lock  = document.getElementById('panel-lock');
       const tabs  = document.getElementById('tab-bar');
@@ -1045,7 +1179,7 @@
         lock.classList.remove('visible');
         tabs.style.display  = '';
         coins.style.display = '';
-        if (!wasInTwitchMode) switchTab('spawn'); // first unlock: default to spawn tab
+        if (!wasInTwitchMode) switchTab('spawn');
       } else {
         lock.classList.add('visible');
         lock.querySelector('.panel-lock-icon').textContent = '\u23f3';
@@ -1053,20 +1187,18 @@
           'Streamer is not in Twitch mode yet. The menu will unlock when they start a run.';
         tabs.style.display  = 'none';
         coins.style.display = 'none';
-        document.querySelectorAll('.spawn-sub,.clone-sub,.bettier-sub,.betkiller-sub')
+        document.querySelectorAll('.spawn-sub,.clone-sub,.bettier-sub,.betkiller-sub,.suggest-sub')
           .forEach(p => p.classList.remove('visible'));
       }
     }
 
-    // Issue #9: apply server-reported enemy tiers (may differ from hardcoded gameTier)
-    if (state.enemyTiers && Object.keys(state.enemyTiers).length > 0) {
-      applyEnemyTiers(state.enemyTiers);
-    }
+    updateBroadcasterVisibility();
 
-    // Update availability + rider popup
+    if (state.enemyTiers && Object.keys(state.enemyTiers).length > 0)
+      applyEnemyTiers(state.enemyTiers);
+
     if (Array.isArray(state.spawnableEnemies) && state.spawnableEnemies.length > 0) {
       updateEnemyAvailability(state.spawnableEnemies, state.enemyCosts || {});
-      // Issue #10: rebuild rider popup filtered to currently spawnable enemies
       buildRiderPopup(state.spawnableEnemies);
     } else if (!_inTwitchMode) {
       document.querySelectorAll('#enemy-grid-wrap .enemy-card').forEach(card => {
@@ -1076,26 +1208,20 @@
     }
   }
 
-  // Issue #9: mutate ENEMIES gameTier based on server data, then rebuild grids
   function applyEnemyTiers(enemyTiers) {
     let changed = false;
     ENEMIES.forEach(e => {
       const serverTier = enemyTiers[e.id];
-      if (serverTier && serverTier !== e.gameTier) {
-        e.gameTier = serverTier;
-        changed = true;
-      }
+      if (serverTier && serverTier !== e.gameTier) { e.gameTier = serverTier; changed = true; }
     });
     if (changed) {
-      buildDropdown();
-      buildSpawnGrid();
-      buildKillerGrid();
+      buildDropdown(); buildSpawnGrid(); buildKillerGrid();
       selectEnemy(selectedEnemy.id);
       selectKiller(selectedKillerEnemy ? selectedKillerEnemy.id : null);
     }
   }
 
-  // ── Coin simulation (client-side prediction) ───────────────────────────────
+  // ── Coin simulation ────────────────────────────────────────────────────────
   function startCoinSimulation() {
     if (_coinTimer) clearInterval(_coinTimer);
     if (_cpm <= 0) return;
@@ -1107,16 +1233,12 @@
     }, 1000);
   }
 
-  // Issue #8: smarter snap — only hard-snap on large diffs, silently absorb small ones
   function snapCoins(serverCoins) {
-    const threshold = _cpm > 0 ? (_cpm / 20) : 5; // ~3 seconds of coins
+    const threshold = _cpm > 0 ? (_cpm / 20) : 5;
     const diff = Math.abs(_simulatedCoins - serverCoins);
-    _simulatedCoins = serverCoins; // always accept server truth
-    if (diff > threshold) {
-      // Large drift: update display immediately to avoid jitter showing wrong number
+    _simulatedCoins = serverCoins;
+    if (diff > threshold)
       document.getElementById('coin-display').textContent = Math.floor(_simulatedCoins);
-    }
-    // Small drift: silently corrected; display will catch up on next simulation tick
   }
 
   function spendCoins(amount) {
@@ -1124,15 +1246,13 @@
     document.getElementById('coin-display').textContent = Math.floor(_simulatedCoins);
   }
 
-  // ── Mod online/offline UI ──────────────────────────────────────────────────
-  // Issue #6: distinguishes three states: not logged in / mod offline / not in twitch mode
+  // ── Mod status UI ──────────────────────────────────────────────────────────
   function setModStatus(online) {
     _modOnline = online;
-    if (!twitchUser) return; // auth lock takes priority
+    if (!twitchUser) return;
     const lock  = document.getElementById('panel-lock');
     const tabs  = document.getElementById('tab-bar');
     const coins = document.getElementById('coin-bar');
-
     if (!online) {
       _inTwitchMode = false;
       lock.classList.add('visible');
@@ -1141,10 +1261,10 @@
         "Streamer\u2019s mod is offline or they\u2019re not playing right now.";
       tabs.style.display  = 'none';
       coins.style.display = 'none';
-      document.querySelectorAll('.spawn-sub,.clone-sub,.bettier-sub,.betkiller-sub')
+      document.querySelectorAll('.spawn-sub,.clone-sub,.bettier-sub,.betkiller-sub,.suggest-sub')
         .forEach(p => p.classList.remove('visible'));
+      updateBroadcasterVisibility();
     } else if (!_inTwitchMode) {
-      // Mod just came online but we haven't received state yet — show waiting message
       lock.classList.add('visible');
       lock.querySelector('.panel-lock-icon').textContent = '\u23f3';
       lock.querySelector('.panel-lock-text').textContent =
@@ -1152,7 +1272,6 @@
       tabs.style.display  = 'none';
       coins.style.display = 'none';
     }
-    // If online && _inTwitchMode: applyState will handle the unlock
   }
 
   function updateEnemyAvailability(spawnable, costs) {
@@ -1184,31 +1303,24 @@
     const armor = document.getElementById('chk-armor').checked;
     const ally  = document.getElementById('chk-ally').checked;
     const cost  = getTotalCost();
-    relaySend({
-      type:      'spawn',
-      username:  twitchUser.login,
-      enemyId:   selectedEnemy.id,
-      rider:     selectedRiderId || '',
-      armor, ally,
-      totalCost: cost
-    });
+    relaySend({ type:'spawn', username:twitchUser.login, enemyId:selectedEnemy.id, rider:selectedRiderId||'', armor, ally, totalCost:cost });
     spendCoins(cost);
     flashButton('go-btn', 'SENT!', '#4f9fff');
   }
 
   function doClone() {
     if (!_modOnline || !_inTwitchMode || cloneUsed >= cloneMax) return;
-    relaySend({ type: 'clone', username: twitchUser.login });
+    relaySend({ type:'clone', username:twitchUser.login });
     cloneUsed++;
     buildCloneHearts();
   }
 
   function doBetTier() {
     if (!_modOnline || !_inTwitchMode) return;
-    if (!selectedTier) { alert('Select a tier first.'); return; }
+    if (!selectedTier) { showToast('Select a tier first.'); return; }
     const amount = parseInt(document.getElementById('tier-bet-amount').value) || 0;
-    if (amount <= 0) { alert('Enter a valid bet amount.'); return; }
-    relaySend({ type: 'bettier', username: twitchUser.login, tier: selectedTier, amount });
+    if (amount <= 0) { showToast('Enter a valid bet amount.'); return; }
+    relaySend({ type:'bettier', username:twitchUser.login, tier:selectedTier, amount });
     spendCoins(amount);
     flashButton('tier-bet-btn', 'BET PLACED!', '#3ddc84', 800);
   }
@@ -1217,12 +1329,12 @@
     if (!_modOnline || !_inTwitchMode) return;
     const amount  = parseInt(document.getElementById('killer-bet-amount').value) || 0;
     const enemyId = selectedKillerEnemy ? selectedKillerEnemy.id : 'other';
-    if (amount <= 0) { alert('Enter a valid bet amount.'); return; }
-    relaySend({ type: 'betkiller', username: twitchUser.login, enemyId, amount });
+    if (amount <= 0) { showToast('Enter a valid bet amount.'); return; }
+    relaySend({ type:'betkiller', username:twitchUser.login, enemyId, amount });
     spendCoins(amount);
   }
 
-  // ── CLOCK (footer only — no duplicate header clock) ────────────────────────
+  // ── Clock ──────────────────────────────────────────────────────────────────
   function updateClock() {
     const now = new Date();
     const str = [now.getHours(), now.getMinutes(), now.getSeconds()]
@@ -1234,7 +1346,7 @@
   //  TWITCH AUTH
   // ==========================================================================
   const TWITCH_CLIENT_ID = 'nt2yu1gs21vl39zcd2b8ntju9jx165';
-  const TWITCH_REDIRECT = 'https://clone-drone-mod.vercel.app';
+  const TWITCH_REDIRECT  = 'https://clone-drone-mod.vercel.app';
 
   let twitchUser = null;
 
@@ -1282,37 +1394,33 @@
         'Logged in as <span>' + (user.display_name || user.login) + '</span>';
     }
 
-    // Show/hide panel content
     document.getElementById('panel-lock').classList.toggle('visible', !loggedIn);
     if (!loggedIn) {
-      // Reset to the "please log in" message
       document.getElementById('panel-lock').querySelector('.panel-lock-icon').textContent = '\ud83d\udd12';
       document.getElementById('panel-lock').querySelector('.panel-lock-text').textContent =
         'Log in with Twitch to spawn enemies, place bets and track your coins.';
     }
     document.getElementById('coin-bar').style.display = loggedIn ? '' : 'none';
     document.getElementById('tab-bar').style.display  = loggedIn ? '' : 'none';
-    document.querySelectorAll('.spawn-sub,.clone-sub,.bettier-sub,.betkiller-sub')
+    document.querySelectorAll('.spawn-sub,.clone-sub,.bettier-sub,.betkiller-sub,.suggest-sub')
       .forEach(p => p.classList.remove('visible'));
 
     if (loggedIn) {
       switchTab('spawn');
-      // Channel priority: ?channel= query param (dev) or URL path segment (production)
-      const qsChannel   = new URLSearchParams(window.location.search).get('channel');
-      const rawSegment  = window.location.pathname.split('/').filter(Boolean).pop() || '';
-      const urlChannel  = qsChannel || rawSegment.replace(/\.html$/i, '') || 'despardo6';
+      const qsChannel  = new URLSearchParams(window.location.search).get('channel');
+      const rawSegment = window.location.pathname.split('/').filter(Boolean).pop() || '';
+      const urlChannel = qsChannel || rawSegment.replace(/\.html$/i, '') || 'despardo6';
       relayConnect(urlChannel);
     } else {
-      if (_ws) { _ws.close(); _ws = null; }
+      if (_ws) { try { _ws.close(); } catch {} _ws = null; }
       if (_coinTimer) { clearInterval(_coinTimer); _coinTimer = null; }
-      _modOnline    = false;
-      _inTwitchMode = false;
+      _modOnline = false; _inTwitchMode = false;
       resetStreamEmbeds();
+      updateBroadcasterVisibility();
     }
   }
 
   async function initAuth() {
-    // 1. Token in hash (Twitch just redirected back)
     const hash      = new URLSearchParams(window.location.hash.slice(1));
     const hashToken = hash.get('access_token');
     if (hashToken) {
@@ -1322,16 +1430,12 @@
       setAuthState(user);
       return;
     }
-
-    // 2. Saved token
     const saved = localStorage.getItem('twitch_token');
     if (saved) {
       const user = await fetchTwitchUser(saved);
       if (user) { setAuthState(user); return; }
-      localStorage.removeItem('twitch_token'); // expired
+      localStorage.removeItem('twitch_token');
     }
-
-    // 3. Not logged in
     setAuthState(null);
   }
 
@@ -1343,8 +1447,7 @@
   buildKillerGrid();
   buildTierGrid();
   buildCloneHearts();
-  buildRiderPopup(null); // null = show all riders at startup
-
+  buildRiderPopup(null);
   selectEnemy(ENEMIES[0].id);
   selectKiller(null);
 
