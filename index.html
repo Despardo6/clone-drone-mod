@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Clone Drone — Twitch Mode</title>
+  <title>Clone Drone Twitch Mode</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
@@ -512,60 +512,72 @@
   // ==========================================================================
   //  DATA
   // ==========================================================================
-  const ENEMIES = [
+const ENEMIES = [
+    // Swords
     { id:'sword1',            name:'Sword 1',        cost:100,  gameTier:'bronze',   canKill:true  },
-    { id:'bow1',              name:'Bow 1',          cost:100,  gameTier:'bronze',   canKill:true  },
-    { id:'spear1',            name:'Spear 1',        cost:100,  gameTier:'bronze',   canKill:true  },
-    { id:'mindspacespear',    name:'MS Spear',       cost:100,  gameTier:'bronze',   canKill:true  },
-    { id:'zombie1',           name:'Zombie 1',       cost:150,  gameTier:'bronze',   canKill:true  },
     { id:'sword2',            name:'Sword 2',        cost:200,  gameTier:'silver',   canKill:true  },
-    { id:'bow2',              name:'Bow 2',          cost:300,  gameTier:'silver',   canKill:true  },
-    { id:'spear2',            name:'Spear 2',        cost:250,  gameTier:'silver',   canKill:true  },
-    { id:'hammer1',           name:'Hammer 1',       cost:200,  gameTier:'silver',   canKill:true  },
     { id:'bsword',            name:'B.Sword',        cost:200,  gameTier:'silver',   canKill:true  },
-    { id:'mindspacehammer',   name:'MS Hammer',      cost:300,  gameTier:'silver',   canKill:true  },
-    { id:'zombie2',           name:'Zombie 2',       cost:300,  gameTier:'silver',   canKill:true  },
-    { id:'kickbot',           name:'Kickbot',        cost:400,  gameTier:'silver',   canKill:false },
     { id:'sword3',            name:'Sword 3',        cost:500,  gameTier:'gold',     canKill:true  },
+    { id:'sword4',            name:'Sword 4',        cost:700,  gameTier:'diamond',  canKill:true  },
+    { id:'sword5',            name:'Sword 5',        cost:1400, gameTier:'titanium', canKill:true  },
+    // Bows
+    { id:'bow1',              name:'Bow 1',          cost:100,  gameTier:'bronze',   canKill:true  },
+    { id:'bow2',              name:'Bow 2',          cost:300,  gameTier:'silver',   canKill:true  },
     { id:'bow3',              name:'Bow 3',          cost:500,  gameTier:'gold',     canKill:true  },
-    { id:'spear3',            name:'Spear 3',        cost:500,  gameTier:'gold',     canKill:true  },
+    { id:'bow4',              name:'Bow 4',          cost:700,  gameTier:'diamond',  canKill:true  },
+    { id:'bow5',              name:'Bow 5',          cost:1200, gameTier:'titanium', canKill:true  },
+    // Hammers
+    { id:'hammer1',           name:'Hammer 1',       cost:200,  gameTier:'silver',   canKill:true  },
     { id:'hammer2',           name:'Hammer 2',       cost:400,  gameTier:'gold',     canKill:true  },
     { id:'bhammer',           name:'B.Hammer',       cost:400,  gameTier:'gold',     canKill:true  },
-    { id:'mindspacesword',    name:'MS Sword',       cost:400,  gameTier:'gold',     canKill:true  },
-    { id:'kickbot2',          name:'Kickbot 2',      cost:1000, gameTier:'gold',     canKill:false },
-    { id:'zombiearcher1',     name:'Zombie Archer',  cost:600,  gameTier:'gold',     canKill:true  },
-    { id:'zombie3',           name:'Zombie 3',       cost:700,  gameTier:'gold',     canKill:true  },
-    { id:'jetpack1',          name:'Jetpack 1',      cost:500,  gameTier:'gold',     canKill:true  },
-    { id:'armorbot',          name:'Armorbot',       cost:500,  gameTier:'gold',     canKill:false },
-    { id:'spidertron5000',    name:'Spider 5000',    cost:500,  gameTier:'gold',     canKill:true  },
-    { id:'sword4',            name:'Sword 4',        cost:700,  gameTier:'diamond',  canKill:true  },
-    { id:'bow4',              name:'Bow 4',          cost:700,  gameTier:'diamond',  canKill:true  },
-    { id:'spear4',            name:'Spear 4',        cost:800,  gameTier:'diamond',  canKill:true  },
     { id:'hammer3',           name:'Hammer 3',       cost:800,  gameTier:'diamond',  canKill:true  },
-    { id:'bjetpack',          name:'B.Jetpack',      cost:800,  gameTier:'diamond',  canKill:true  },
+    { id:'hammer5',           name:'Hammer 5',       cost:1200, gameTier:'titanium', canKill:true  },
+    // Spears
+    { id:'spear1',            name:'Spear 1',        cost:100,  gameTier:'bronze',   canKill:true  },
+    { id:'spear2',            name:'Spear 2',        cost:250,  gameTier:'silver',   canKill:true  },
+    { id:'spear3',            name:'Spear 3',        cost:500,  gameTier:'gold',     canKill:true  },
+    { id:'spear4',            name:'Spear 4',        cost:800,  gameTier:'diamond',  canKill:true  },
+    // Kickbots
+    { id:'kickbot',           name:'Kickbot',        cost:400,  gameTier:'silver',   canKill:false },
+    { id:'kickbot2',          name:'Kickbot 2',      cost:1000, gameTier:'gold',     canKill:false },
+    // Mindspace
+    { id:'mindspacespear',    name:'MS Spear',       cost:100,  gameTier:'bronze',   canKill:true  },
+    { id:'mindspacehammer',   name:'MS Hammer',      cost:300,  gameTier:'silver',   canKill:true  },
+    { id:'mindspacesword',    name:'MS Sword',       cost:400,  gameTier:'gold',     canKill:true  },
+    // Jetpacks
+    { id:'jetpack1',          name:'Jetpack 1',      cost:500,  gameTier:'gold',     canKill:true  },
     { id:'jetpack2',          name:'Jetpack 2',      cost:800,  gameTier:'diamond',  canKill:true  },
+    { id:'bjetpack',          name:'B.Jetpack',      cost:800,  gameTier:'diamond',  canKill:true  },
     { id:'jetpackarcher',     name:'JP Archer',      cost:700,  gameTier:'diamond',  canKill:true  },
     { id:'jetpackhammer',     name:'JP Hammer',      cost:600,  gameTier:'diamond',  canKill:true  },
     { id:'jetpackspear1',     name:'JP Spear 1',     cost:500,  gameTier:'diamond',  canKill:true  },
-    { id:'zombiejetpack1',    name:'Zombie JP',      cost:550,  gameTier:'diamond',  canKill:true  },
+    { id:'jetpackspear2',     name:'JP Spear 2',     cost:1000, gameTier:'titanium', canKill:true  },
+    // Zombies
+    { id:'zombie1',           name:'Zombie 1',       cost:150,  gameTier:'bronze',   canKill:true  },
+    { id:'zombie2',           name:'Zombie 2',       cost:300,  gameTier:'silver',   canKill:true  },
+    { id:'zombie3',           name:'Zombie 3',       cost:700,  gameTier:'gold',     canKill:true  },
     { id:'zombie4',           name:'Zombie 4',       cost:900,  gameTier:'diamond',  canKill:true  },
+    { id:'zombiearcher1',     name:'Zombie Archer',  cost:600,  gameTier:'gold',     canKill:true  },
+    { id:'zombiejetpack1',    name:'Zombie JP',      cost:550,  gameTier:'diamond',  canKill:true  },
     { id:'zombiefleetcaptain',name:'Zombie Fleet',   cost:1400, gameTier:'diamond',  canKill:true  },
+    // Spidertrons
+    { id:'spidertron5000',    name:'Spider 5000',    cost:500,  gameTier:'gold',     canKill:true  },
+    { id:'spidertron6000',    name:'Spider 6000',    cost:1000, gameTier:'titanium', canKill:true  },
+    { id:'spidertron7000',    name:'Spider 7000',    cost:1800, gameTier:'uranium',  canKill:true  },
+    // Raptors
+    { id:'zombieraptor',      name:'Zombie Raptor',  cost:1000, gameTier:'titanium', canKill:true,  isRaptor:true },
+    { id:'flameraptor',       name:'Flame Raptor',   cost:1000, gameTier:'diamond',  canKill:true,  isRaptor:true },
+    { id:'laserraptor',       name:'Laser Raptor',   cost:2000, gameTier:'titanium', canKill:true,  isRaptor:true },
+    // Fleet
+    { id:'fleetoverseer',     name:'Fleet Overseer', cost:2500, gameTier:'uranium',  canKill:true,  freeArmor:true },
     { id:'fleetcaptain',      name:'Fleet Cpt.',     cost:1500, gameTier:'diamond',  canKill:true  },
     { id:'fleetanalysisbot1', name:'Fleet AB 1',     cost:1250, gameTier:'diamond',  canKill:true  },
     { id:'fleetanalysisbot2', name:'Fleet AB 2',     cost:1250, gameTier:'diamond',  canKill:true  },
+    { id:'fleetanalysisbot3', name:'Fleet AB 3',     cost:2000, gameTier:'diamond', canKill:true  },
     { id:'fleetanalysisbot4', name:'Fleet AB 4',     cost:1250, gameTier:'diamond',  canKill:true  },
-    { id:'flameraptor',       name:'Flame Raptor',   cost:1000, gameTier:'diamond',  canKill:true,  isRaptor:true },
-    { id:'sword5',            name:'Sword 5',        cost:1400, gameTier:'titanium', canKill:true  },
-    { id:'bow5',              name:'Bow 5',          cost:1200, gameTier:'titanium', canKill:true  },
-    { id:'hammer5',           name:'Hammer 5',       cost:1200, gameTier:'titanium', canKill:true  },
-    { id:'jetpackspear2',     name:'JP Spear 2',     cost:1000, gameTier:'titanium', canKill:true  },
-    { id:'laserraptor',       name:'Laser Raptor',   cost:2000, gameTier:'titanium', canKill:true,  isRaptor:true },
-    { id:'zombieraptor',      name:'Zombie Raptor',  cost:1000, gameTier:'titanium', canKill:true,  isRaptor:true },
-    { id:'spidertron6000',    name:'Spider 6000',    cost:1000, gameTier:'titanium', canKill:true  },
-    { id:'fleetanalysisbot3', name:'Fleet AB 3',     cost:2000, gameTier:'titanium', canKill:true  },
+    // Emperors
+    { id:'armorbot',          name:'Armorbot',       cost:500,  gameTier:'gold',     canKill:false },
     { id:'emperor1',          name:'Emperor 1',      cost:2200, gameTier:'uranium',  canKill:true  },
-    { id:'fleetoverseer',     name:'Fleet Overseer', cost:2500, gameTier:'uranium',  canKill:true,  freeArmor:true },
-    { id:'spidertron7000',    name:'Spider 7000',    cost:1800, gameTier:'uranium',  canKill:true  },
     { id:'emperor2',          name:'Emperor 2',      cost:2800, gameTier:'insanium', canKill:true  },
   ];
 
