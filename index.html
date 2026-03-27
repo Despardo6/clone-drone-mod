@@ -77,10 +77,23 @@
     @keyframes toast-bar { from { width: 100%; } to { width: 0%; } }
 
     /* ── LAYOUT ── */
-    .layout { display: grid; grid-template-columns: 280px 1fr 300px; height: calc(100vh - 48px); }
+    .layout {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr) 300px;
+      grid-template-areas: "controls player chat";
+      height: calc(100vh - 48px);
+    }
 
     /* ══ SPAWN PANEL ══ */
-    .spawn-panel { display: flex; flex-direction: column; background: var(--surface); border-right: 1px solid var(--border); overflow: hidden; }
+    .spawn-panel {
+      grid-area: controls;
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      overflow: hidden;
+      min-width: 0;
+    }
 
     .coin-bar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--border); background: var(--surface2); flex-shrink: 0; }
     .coin-img { width: 22px; height: 22px; object-fit: contain; mix-blend-mode: screen; flex-shrink: 0; }
@@ -293,7 +306,7 @@
     .bc-btn.set:hover  { background: #ffd966; }
 
     /* ── PLAYER ── */
-    .player-panel { display: flex; flex-direction: column; background: #000; }
+    .player-panel { grid-area: player; display: flex; flex-direction: column; background: #000; min-width: 0; }
     .player-wrap { flex: 1; position: relative; background: #000; overflow: hidden; }
     .player-wrap iframe { width: 100%; height: 100%; display: block; border: none; }
     /* footer now has only channel name + clock — no external link */
@@ -301,7 +314,7 @@
     .channel-name { color: var(--accent); font-size: 0.75rem; text-transform: uppercase; }
 
     /* ── CHAT (no header) ── */
-    .chat-panel { display: flex; flex-direction: column; background: var(--surface); border-left: 1px solid var(--border); }
+    .chat-panel { grid-area: chat; display: flex; flex-direction: column; background: var(--surface); border-left: 1px solid var(--border); min-width: 0; }
     .chat-wrap { flex: 1; overflow: hidden; }
     .chat-wrap iframe { width: 100%; height: 100%; border: none; }
     .chat-footer { padding: 8px 14px; border-top: 1px solid var(--border); font-size: 0.65rem; color: var(--text-dim); letter-spacing: 1px; display: flex; align-items: center; gap: 8px; font-family: 'Share Tech Mono', monospace; flex-shrink: 0; }
@@ -333,6 +346,143 @@
     .panel-lock.visible { display: flex; }
     .panel-lock-icon { font-size: 2rem; opacity: 0.25; }
     .panel-lock-text { font-size: 0.8rem; line-height: 1.5; max-width: 200px; }
+
+    @media (max-width: 1100px) {
+      .layout { grid-template-columns: 240px minmax(0, 1fr) 260px; }
+      .enemy-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 820px) {
+      html, body {
+        height: auto;
+        min-height: 100%;
+        overflow: auto;
+      }
+
+      body { overflow-x: hidden; }
+
+      header {
+        height: auto;
+        min-height: 48px;
+        padding: 10px 14px;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .header-right {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .toast-container {
+        top: 70px;
+        right: 10px;
+        left: 10px;
+        width: auto;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "player"
+          "controls"
+          "chat";
+        height: auto;
+        min-height: calc(100dvh - 48px);
+      }
+
+      .player-panel,
+      .spawn-panel,
+      .chat-panel {
+        border-right: none;
+        border-left: none;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .player-panel { min-height: 42dvh; }
+      .player-wrap { min-height: 34dvh; }
+      .chat-panel { min-height: 52dvh; }
+      .chat-wrap { min-height: 46dvh; }
+
+      .tab-bar {
+        flex-direction: row;
+        overflow-x: auto;
+        padding: 6px;
+      }
+
+      .tab-btn {
+        flex: 0 0 auto;
+        white-space: nowrap;
+      }
+
+      .spawn-config,
+      .bet-k-controls,
+      .bet-amount-row,
+      .auth-bar,
+      .auth-user {
+        flex-wrap: wrap;
+      }
+
+      .check-go-row { flex-direction: column; }
+      .check-group { flex-wrap: wrap; }
+
+      .go-btn,
+      .bet-go-btn,
+      .clone-go-btn,
+      .suggest-btn,
+      .twitch-login-btn {
+        width: 100%;
+      }
+
+      .go-btn {
+        border-left: none;
+        border-top: 1px solid rgba(61,220,132,0.3);
+        min-height: 44px;
+      }
+
+      .enemy-grid { grid-template-columns: repeat(4, 1fr); }
+
+      .panel-lock-text,
+      .clone-desc,
+      .suggest-desc { max-width: none; }
+    }
+
+    @media (max-width: 560px) {
+      .logo {
+        font-size: 0.95rem;
+        letter-spacing: 2px;
+      }
+
+      .spawn-config { padding: 8px; }
+
+      .enemy-selected-name,
+      .betkiller-selected-name,
+      .tier-name,
+      .clone-title,
+      .suggest-title { font-size: 0.95rem; }
+
+      .enemy-grid { grid-template-columns: repeat(3, 1fr); }
+
+      .check-group,
+      .bet-k-controls,
+      .bet-controls,
+      .suggest-body,
+      .clone-body {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .player-footer,
+      .chat-footer,
+      .coin-bar,
+      .auth-bar {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .other-card,
+      .tier-row { padding: 10px; }
+    }
   </style>
 </head>
 <body>
