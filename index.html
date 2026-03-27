@@ -957,8 +957,9 @@ const ENEMIES = [
   //  BROADCASTER COIN CONTROLS
   // ==========================================================================
   function isBroadcaster() {
-    return twitchUser && _wsChannel &&
-           twitchUser.login.toLowerCase() === _wsChannel.toLowerCase();
+    // Safe check: Ensure user and channel are fully loaded before comparing
+    if (!twitchUser || !twitchUser.login || !_wsChannel) return false;
+    return twitchUser.login.toLowerCase() === _wsChannel.toLowerCase();
   }
 
   function updateBroadcasterVisibility() {
