@@ -597,13 +597,9 @@ const ENEMIES = [
     { id:'insanium', name:'Insanium', color:'#ff4c4c' },
   ];
 
-  const RIDER_EXCLUDED = new Set([
+  let RIDER_EXCLUDED = new Set([
     'flameraptor','laserraptor','zombieraptor',
-    'fleetcaptain','fleetoverseer',
-    'spidertron5000','spidertron6000','spidertron7000',
-    'armorbot','emperor1','emperor2',
-    'mindspacesword','mindspacespear','mindspacehammer',
-    'zombiefleetcaptain',
+    'spidertron5000','spidertron6000','spidertron7000'
   ]);
 
   // Twitch emotes the game appends to chat messages — stripped from toasts
@@ -1187,6 +1183,15 @@ const ENEMIES = [
         coins.style.display = 'none';
         document.querySelectorAll('.spawn-sub,.clone-sub,.bettier-sub,.betkiller-sub,.suggest-sub')
           .forEach(p => p.classList.remove('visible'));
+      }
+
+      if (state.riderExcluded && Array.isArray(state.riderExcluded)) {
+          RIDER_EXCLUDED = new Set(state.riderExcluded);
+          
+          // Refresh the popup so users see the newly unlocked riders immediately
+          if (Array.isArray(state.spawnableEnemies)) {
+              buildRiderPopup(state.spawnableEnemies);
+          }
       }
     }
 
