@@ -232,6 +232,8 @@
     .bet-go-btn { padding: 9px; background: var(--accent); border: none; color: #000; font-family: 'Rajdhani', sans-serif; font-size: 0.95rem; font-weight: 700; letter-spacing: 3px; cursor: pointer; text-transform: uppercase; border-radius: 3px; transition: all 0.1s; }
     .bet-go-btn:hover { background: #80c0ff; }
     .bet-go-btn:active { transform: scale(0.97); }
+    .tier-bet-controls { border-bottom: 1px solid var(--border); }
+    .tier-bet-controls .bet-go-btn { padding: 7px 14px; }
 
     /* ── BET KILLER SUB ── */
     .betkiller-sub { display: none; flex-direction: column; flex: 1; overflow: hidden; min-height: 0; }
@@ -280,13 +282,43 @@
     /* ── BROADCASTER SECTION ── */
     .broadcaster-section {
       border-top: 1px solid var(--border); background: var(--surface2);
-      flex-shrink: 0; padding: 7px 10px;
+      flex-shrink: 0;
     }
+    .broadcaster-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 10px;
+      background: transparent;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      text-align: left;
+    }
+    .broadcaster-toggle:hover { background: rgba(79,159,255,0.05); }
     .broadcaster-label {
       font-size: 0.58rem; letter-spacing: 2px; text-transform: uppercase;
-      color: var(--gold); font-weight: 700; display: block; margin-bottom: 6px;
+      color: var(--gold); font-weight: 700; display: block;
     }
-    .broadcaster-controls { display: flex; flex-direction: column; gap: 5px; }
+    .broadcaster-arrow {
+      color: var(--text-dim);
+      font-size: 0.7rem;
+      transition: transform 0.15s ease, color 0.15s ease;
+    }
+    .broadcaster-section.open .broadcaster-arrow {
+      transform: rotate(90deg);
+      color: var(--gold);
+    }
+    .broadcaster-controls {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      padding: 0 10px 10px;
+      border-top: 1px solid var(--border);
+    }
+    .broadcaster-section.open .broadcaster-controls { display: flex; }
     .bc-user-input {
       width: 100%; background: var(--surface3); border: 1px solid var(--border2);
       color: var(--text); font-family: 'Share Tech Mono', monospace;
@@ -574,14 +606,12 @@
 
       <!-- ─ BET TIER ─ -->
       <div class="bettier-sub" id="tab-bettier">
-        <div class="tier-grid" id="tier-grid"></div>
-        <div class="bet-controls">
-          <div class="bet-amount-row">
-            <span class="bet-amount-label">Bet</span>
-            <input class="bet-input" id="tier-bet-amount" type="number" min="1" value="100">
-          </div>
+        <div class="bet-k-controls tier-bet-controls">
+          <span class="bet-amount-label">Bet</span>
+          <input class="bet-input" id="tier-bet-amount" type="number" min="1" value="100">
           <button class="bet-go-btn" id="tier-bet-btn" onclick="doBetTier()">PLACE BET</button>
         </div>
+        <div class="tier-grid" id="tier-grid"></div>
       </div>
 
       <!-- ─ BET KILLER ─ -->
@@ -620,7 +650,10 @@
 
       <!-- ─ BROADCASTER CONTROLS (only shown to broadcaster when in twitch mode) ─ -->
       <div class="broadcaster-section" id="broadcaster-section" style="display:none;">
-        <span class="broadcaster-label">&#9889; Streamer Controls</span>
+        <button class="broadcaster-toggle" type="button" onclick="toggleBroadcasterSection()" aria-expanded="false">
+          <span class="broadcaster-label">&#9889; Streamer Controls</span>
+          <span class="broadcaster-arrow">&#9658;</span>
+        </button>
         <div class="broadcaster-controls">
           <input type="text" class="bc-user-input" id="bc-username"
             placeholder="@username (blank = everyone)">
@@ -1106,6 +1139,21 @@ const ENEMIES = [
   // ==========================================================================
   //  BROADCASTER COIN CONTROLS
   // ==========================================================================
+  let broadcasterControlsOpen = false;
+
+  function syncBroadcasterSection() {
+    const section = document.getElementById('broadcaster-section');
+    if (!section) return;
+    section.classList.toggle('open', broadcasterControlsOpen);
+    const toggle = section.querySelector('.broadcaster-toggle');
+    if (toggle) toggle.setAttribute('aria-expanded', broadcasterControlsOpen ? 'true' : 'false');
+  }
+
+  function toggleBroadcasterSection() {
+    broadcasterControlsOpen = !broadcasterControlsOpen;
+    syncBroadcasterSection();
+  }
+
   function updateBroadcasterVisibility() {
     try {
       const section = document.getElementById('broadcaster-section');
@@ -1118,7 +1166,10 @@ const ENEMIES = [
       }
 
       // Hide controls if they are not the broadcaster, OR if the mod is offline/not in a run
-      section.style.display = (isBroadcaster && _inTwitchMode && _modOnline) ? '' : 'none';
+      const canShow = isBroadcaster && _inTwitchMode && _modOnline;
+      section.style.display = canShow ? '' : 'none';
+      if (!canShow) broadcasterControlsOpen = false;
+      syncBroadcasterSection();
     } catch (e) {
       console.error("Broadcaster UI error:", e);
     }
