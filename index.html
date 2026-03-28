@@ -214,24 +214,16 @@
     .clone-go-btn:active { transform: scale(0.96); }
 
     /* ── BET TIER SUB ── */
-    .bettier-sub { display: none; flex-direction: column; flex: 1; overflow-y: auto; overflow-x: hidden; min-height: 0; }
+    .bettier-sub { display: none; flex-direction: column; flex: 1; overflow: hidden; min-height: 0; }
     .bettier-sub.visible { display: flex; }
-    .bettier-sub::-webkit-scrollbar { width: 4px; }
-    .bettier-sub::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-    .tier-grid { display: flex; flex-direction: column; gap: 4px; padding: 8px; flex: 1; }
+    .tier-grid { display: flex; flex-direction: column; gap: 4px; padding: 8px; flex: 1; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; scrollbar-color: var(--border2) transparent; }
+    .tier-grid::-webkit-scrollbar { width: 4px; }
+    .tier-grid::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
     .tier-row { display: flex; align-items: center; padding: 9px 12px; background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; cursor: pointer; transition: all 0.12s; gap: 10px; user-select: none; }
     .tier-row:hover { background: var(--surface3); }
     .tier-row.selected { border-color: var(--accent); background: rgba(79,159,255,0.08); }
     .tier-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.15); }
     .tier-name { font-weight: 700; font-size: 0.95rem; letter-spacing: 1px; text-transform: uppercase; flex: 1; }
-    .bet-controls { display: flex; flex-direction: column; gap: 0; padding: 8px; border-top: 1px solid var(--border); flex-shrink: 0; }
-    .bet-amount-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
-    .bet-amount-label { font-size: 0.78rem; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
-    input.bet-input { flex: 1; background: var(--surface3); border: 1px solid var(--border2); border-radius: 2px; color: var(--gold); font-family: 'Share Tech Mono', monospace; font-size: 0.85rem; padding: 5px 8px; outline: none; min-width: 0; }
-    input.bet-input:focus { border-color: var(--accent); }
-    .bet-go-btn { padding: 9px; background: var(--accent); border: none; color: #000; font-family: 'Rajdhani', sans-serif; font-size: 0.95rem; font-weight: 700; letter-spacing: 3px; cursor: pointer; text-transform: uppercase; border-radius: 3px; transition: all 0.1s; }
-    .bet-go-btn:hover { background: #80c0ff; }
-    .bet-go-btn:active { transform: scale(0.97); }
 
     /* ── BET KILLER SUB ── */
     .betkiller-sub { display: none; flex-direction: column; flex: 1; overflow: hidden; min-height: 0; }
@@ -574,14 +566,15 @@
 
       <!-- ─ BET TIER ─ -->
       <div class="bettier-sub" id="tab-bettier">
-        <div class="tier-grid" id="tier-grid"></div>
-        <div class="bet-controls">
-          <div class="bet-amount-row">
-            <span class="bet-amount-label">Bet</span>
-            <input class="bet-input" id="tier-bet-amount" type="number" min="1" value="100">
-          </div>
-          <button class="bet-go-btn" id="tier-bet-btn" onclick="doBetTier()">PLACE BET</button>
+        <div class="betkiller-config">
+          <div class="betkiller-config-label">Bet on what tier streamer dies</div>
         </div>
+        <div class="bet-k-controls">
+          <span class="bet-amount-label">Bet</span>
+          <input class="bet-input" id="tier-bet-amount" type="number" min="1" value="100">
+          <button class="bet-go-btn" style="padding:7px 14px;" id="tier-bet-btn" onclick="doBetTier()">BET</button>
+        </div>
+        <div class="tier-grid" id="tier-grid"></div>
       </div>
 
       <!-- ─ BET KILLER ─ -->
