@@ -433,8 +433,20 @@
 
       .player-panel { min-height: 42dvh; }
       .player-wrap { min-height: 34dvh; }
-      .chat-panel { min-height: 52dvh; }
-      .chat-wrap { min-height: 46dvh; }
+      .chat-panel {
+        min-height: 68dvh;
+        padding-bottom: env(safe-area-inset-bottom, 0);
+      }
+      .chat-wrap {
+        min-height: 68dvh;
+        overflow: visible;
+      }
+      .chat-wrap iframe {
+        min-height: 68dvh;
+      }
+      .chat-footer {
+        display: none;
+      }
 
       .tab-bar {
         flex-direction: row;
@@ -505,7 +517,6 @@
       }
 
       .player-footer,
-      .chat-footer,
       .coin-bar,
       .auth-bar {
         padding-left: 12px;
