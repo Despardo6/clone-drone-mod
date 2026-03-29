@@ -1569,6 +1569,14 @@ const ENEMIES = [
   function applyPollState(data) {
     const container = document.getElementById('vote-options-container');
     
+    // NEW: Check if the streamer turned the setting off entirely
+    if (!data.enabled) {
+      container.innerHTML = '<div class="vote-status" style="color: #ff4c4c;">Voting is not enabled by the streamer.</div>';
+      currentVoteIndex = -1;
+      currentPollId = null;
+      return;
+    }
+
     if (!data.active) {
       container.innerHTML = '<div class="vote-status">Waiting for the next round to start...</div>';
       currentVoteIndex = -1; // Reset local vote
