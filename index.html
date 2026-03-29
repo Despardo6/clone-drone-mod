@@ -1564,6 +1564,7 @@ const ENEMIES = [
   }
 
   let currentVoteIndex = -1; // Local client's choice
+  let currentPollId = null;  // Track which poll we are on to reset selections
 
   function applyPollState(data) {
     const container = document.getElementById('vote-options-container');
@@ -1571,7 +1572,14 @@ const ENEMIES = [
     if (!data.active) {
       container.innerHTML = '<div class="vote-status">Waiting for the next round to start...</div>';
       currentVoteIndex = -1; // Reset local vote
+      currentPollId = null;
       return;
+    }
+
+    // If it's a new poll, reset the user's local selection
+    if (data.pollId && data.pollId !== currentPollId) {
+        currentVoteIndex = -1;
+        currentPollId = data.pollId;
     }
 
     let html = '';
