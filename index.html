@@ -279,6 +279,17 @@
     .suggest-btn:hover { background: #80c0ff; }
     .suggest-btn:active { transform: scale(0.97); }
 
+    /* ── VOTE SUB ── */
+    .vote-sub { display: none; flex-direction: column; flex: 1; overflow-y: auto; padding: 16px; gap: 10px; }
+    .vote-sub.visible { display: flex; }
+    .vote-header { font-size: 1.1rem; font-weight: 700; text-align: center; text-transform: uppercase; color: var(--gold); letter-spacing: 2px; margin-bottom: 8px; }
+    .vote-option { position: relative; background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 14px 16px; cursor: pointer; transition: transform 0.1s, border-color 0.1s; overflow: hidden; display: flex; justify-content: space-between; align-items: center; }
+    .vote-option:hover { border-color: var(--accent); transform: translateY(-1px); }
+    .vote-progress { position: absolute; top: 0; left: 0; bottom: 0; background: rgba(79,159,255,0.15); transition: width 0.3s ease; z-index: 0; }
+    .vote-name { font-weight: 700; font-size: 1rem; z-index: 1; text-transform: uppercase; }
+    .vote-count { font-family: 'Share Tech Mono', monospace; color: var(--accent); font-size: 0.9rem; z-index: 1; }
+    .vote-status { text-align: center; color: var(--text-dim); font-size: 0.9rem; font-style: italic; margin-top: 20px; }
+
     /* ── BROADCASTER SECTION ── */
     .broadcaster-section {
       border-top: 1px solid var(--border); background: var(--surface2);
@@ -575,6 +586,7 @@
         <button class="tab-btn" data-tab="bettier"   onclick="switchTab('bettier')">Bet Tier <span class="tab-arrow">&#9658;</span></button>
         <button class="tab-btn" data-tab="betkiller" onclick="switchTab('betkiller')">Bet Killer <span class="tab-arrow">&#9658;</span></button>
         <button class="tab-btn" data-tab="suggest"   onclick="switchTab('suggest')">Suggest <span class="tab-arrow">&#9658;</span></button>
+        <button class="tab-btn" data-tab="vote" onclick="switchTab('vote')">Vote <span class="tab-arrow">&#9658;</span></button>
       </div>
 
       <!-- ─ SPAWN ─ -->
@@ -656,6 +668,14 @@
             <input type="checkbox" id="chk-mod-suggest" onchange="onModSuggestChange()"> This is a mod
           </label>
           <button class="suggest-btn" id="suggest-btn" onclick="doSuggest()">SUGGEST</button>
+        </div>
+      </div>
+
+      <!-- ─ VOTE ─ -->
+      <div class="vote-sub" id="tab-vote">
+        <div class="vote-header">Audience Upgrade Vote</div>
+        <div id="vote-options-container">
+          <div class="vote-status">Waiting for the next round to start...</div>
         </div>
       </div>
 
@@ -1362,6 +1382,9 @@ const ENEMIES = [
         if (twitchUser && msg.username === twitchUser.login.toLowerCase())
           showToast(msg.message);
         break;
+      case 'pollState':
+        applyPollState(msg);
+        break;
       case 'error':
         showToast(msg.message || 'An error occurred.');
         break;
@@ -1532,6 +1555,36 @@ const ENEMIES = [
     updateCostDisplay();
   }
 
+  let currentVoteIndex = -1; // Local client's choice
+
+  function applyPollState(data) {
+    const container = document.getElementById('vote-options-container');
+    
+    if (!data.active) {
+      container.innerHTML = '<div class="vote-status">Waiting for the next round to start...</div>';
+      currentVoteIndex = -1; // Reset local vote
+      return;
+    }
+
+    let html = '';
+    data.options.forEach((opt, idx) => {
+      let pct = data.totalVotes > 0 ? (opt.votes / data.totalVotes) * 100 : 0;
+      
+      // Highlight if the viewer previously clicked it
+      let selectedStyle = (idx === currentVoteIndex) ? 'border-color: var(--accent); box-shadow: 0 0 8px rgba(79,159,255,0.25);' : '';
+
+      html += `
+        <div class="vote-option" style="${selectedStyle}" onclick="doVote(${idx})">
+          <div class="vote-progress" style="width: ${pct}%"></div>
+          <span class="vote-name">${idx + 1}. ${opt.name}</span>
+          <span class="vote-count">${opt.votes}</span>
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
+  }
+
   // ── Actions ────────────────────────────────────────────────────────────────
   function flashButton(id, text, color, duration) {
     duration = duration || 700;
@@ -1576,6 +1629,17 @@ const ENEMIES = [
     if (amount <= 0) { showToast('Enter a valid bet amount.'); return; }
     relaySend({ type:'betkiller', username:twitchUser.login, enemyId, amount });
     spendCoins(amount);
+  }
+
+  function doVote(idx) {
+    if (!_modOnline || !_inTwitchMode) return;
+    currentVoteIndex = idx;
+    relaySend({ type: 'vote', username: twitchUser.login, voteIndex: idx });
+    
+    // Re-render immediately to show the highlight while waiting for the server
+    document.querySelectorAll('.vote-option').forEach((el, i) => {
+      el.style.borderColor = (i === idx) ? 'var(--accent)' : 'var(--border)';
+    });
   }
 
   // ── Clock ──────────────────────────────────────────────────────────────────
