@@ -819,7 +819,7 @@ const ENEMIES = [
 
   let RIDER_EXCLUDED = new Set([
     'flameraptor','laserraptor','zombieraptor',
-    'spidertron5000','spidertron6000','spidertron7000', 'ridableemperor', 'icekicker'
+    'spidertron5000','spidertron6000','spidertron7000', 'ridableemperor'
   ]);
 
   // Twitch emotes the game appends to chat messages — stripped from toasts
@@ -855,7 +855,10 @@ const ENEMIES = [
     if (armor && !selectedEnemy.freeArmor) base *= 2;
     const rider = getRiderEnemy();
     let riderCost = rider ? rider.cost : 0;
-    if (armor && rider) riderCost *= 2;
+    
+    // FIX: Check if the rider has freeArmor
+    if (armor && rider && !rider.freeArmor) riderCost *= 2; 
+    
     return base + riderCost;
   }
   function updateCostDisplay() {
@@ -928,7 +931,8 @@ const ENEMIES = [
     if (selectedRiderId) {
       const rider = getRiderEnemy();
       document.getElementById('rider-thumb-img').src = portrait(selectedRiderId, armor);
-      document.getElementById('rider-picker-cost').textContent = '+' + (armor ? rider.cost * 2 : rider.cost);
+      // FIX: Check freeArmor for the selected rider label
+      document.getElementById('rider-picker-cost').textContent = '+' + (armor && !rider.freeArmor ? rider.cost * 2 : rider.cost);
     }
     // Update popup items that are currently in the DOM
     document.querySelectorAll('.rider-popup-item[data-id]').forEach(item => {
@@ -939,7 +943,8 @@ const ENEMIES = [
       const thumbImg = item.querySelector('.rider-popup-thumb img');
       const priceEl  = item.querySelector('.rider-popup-price');
       if (thumbImg) thumbImg.src = portrait(rid, armor);
-      if (priceEl)  priceEl.textContent = '+' + (armor ? re.cost * 2 : re.cost);
+      // FIX: Check freeArmor for the popup list items
+      if (priceEl)  priceEl.textContent = '+' + (armor && !re.freeArmor ? re.cost * 2 : re.cost);
     });
     updateCostDisplay();
   }
@@ -951,7 +956,7 @@ const ENEMIES = [
   // ==========================================================================
   function buildRiderPopup(spawnableIds) {
     const popup  = document.getElementById('rider-popup');
-    const armor  = document.getElementById('chk-armor').checked;  // ← FIX
+    const armor  = document.getElementById('chk-armor').checked;  
     popup.innerHTML = '';
 
     const noneItem = document.createElement('div');
@@ -972,8 +977,11 @@ const ENEMIES = [
       const item = document.createElement('div');
       item.className = 'rider-popup-item';
       item.dataset.id = e.id;
-      const itemCost = armor ? e.cost * 2 : e.cost;           // ← FIX
-      const imgSrc   = portrait(e.id, armor);                 // ← FIX
+      
+      // FIX: Check e.freeArmor when building the popup menu
+      const itemCost = (armor && !e.freeArmor) ? e.cost * 2 : e.cost;           
+      const imgSrc   = portrait(e.id, armor);                 
+      
       item.innerHTML =
         '<div class="rider-popup-thumb"><img src="' + imgSrc + '" alt="' + e.name + '" onerror="this.style.opacity=.15"></div>' +
         '<span class="rider-popup-name">' + e.name + '</span>' +
@@ -995,9 +1003,13 @@ const ENEMIES = [
     selectedRiderId = id || null;
     const enemy = id ? ENEMIES.find(e => e.id === id) : null;
     const armor = document.getElementById('chk-armor').checked;
+    
     document.getElementById('rider-thumb-img').src = enemy ? portrait(id, armor) : NO_RIDER;
     document.getElementById('rider-picker-name').textContent = enemy ? enemy.name : 'None';
-    document.getElementById('rider-picker-cost').textContent = enemy ? '+' + (armor ? enemy.cost * 2 : enemy.cost) : '';
+    
+    // FIX: Check enemy.freeArmor when selecting a new rider from the list
+    document.getElementById('rider-picker-cost').textContent = enemy ? '+' + (armor && !enemy.freeArmor ? enemy.cost * 2 : enemy.cost) : '';
+    
     document.querySelectorAll('.rider-popup-item').forEach(item => {
       item.classList.toggle('selected', item.dataset.id === (id || ''));
     });
