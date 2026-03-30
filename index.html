@@ -732,16 +732,16 @@ const ENEMIES = [
     { id:'sword2',            name:'Sword 2',        cost:200,  gameTier:'silver',   canKill:true  },
     { id:'bsword',            name:'B.Sword',        cost:200,  gameTier:'silver',   canKill:true  },
     { id:'sword3',            name:'Sword 3',        cost:500,  gameTier:'gold',     canKill:true  },
-    { id:'playerdummym',       name:'Player Dummy',   cost:500,  gameTier:'gold',     canKill:true, isMod:true },
+    { id:'playerdummy',       name:'Player Dummy',   cost:500,  gameTier:'gold',     canKill:true, isMod:true },
     { id:'sword4',            name:'Sword 4',        cost:700,  gameTier:'diamond',  canKill:true  },
     { id:'sword5',            name:'Sword 5',        cost:1400, gameTier:'titanium', canKill:true  },
     // Bows
     { id:'bow1',              name:'Bow 1',          cost:100,  gameTier:'bronze',   canKill:true  },
     { id:'bow2',              name:'Bow 2',          cost:300,  gameTier:'silver',   canKill:true  },
-    { id:'bow2_stationarym',   name:'Bow 2 Stat.',    cost:300,  gameTier:'silver',   canKill:true, isMod:true },
+    { id:'bow2_stationary',   name:'Bow 2 Stat.',    cost:300,  gameTier:'silver',   canKill:true, isMod:true },
     { id:'bow3',              name:'Bow 3',          cost:500,  gameTier:'gold',     canKill:true  },
     { id:'bow4',              name:'Bow 4',          cost:700,  gameTier:'diamond',  canKill:true  },
-    { id:'bow4_stationarym',   name:'Bow 4 Stat.',    cost:600,  gameTier:'diamond',  canKill:true, isMod:true },
+    { id:'bow4_stationary',   name:'Bow 4 Stat.',    cost:600,  gameTier:'diamond',  canKill:true, isMod:true },
     { id:'bow5',              name:'Bow 5',          cost:1200, gameTier:'titanium', canKill:true  },
     // Hammers
     { id:'hammer1',           name:'Hammer 1',       cost:200,  gameTier:'silver',   canKill:true  },
@@ -795,7 +795,7 @@ const ENEMIES = [
     // Fleet
     { id:'fleetoverseer',     name:'Fleet Overseer', cost:2500, gameTier:'uranium',  canKill:true,  freeArmor:true },
     { id:'fleetcaptain',      name:'Fleet Cpt.',     cost:1500, gameTier:'diamond',  canKill:true  },
-    { id:'analysisbotm',       name:'Analysis Bot',   cost:50,   gameTier:'bronze',   canKill:false, freeArmor:true, isMod:true },
+    { id:'analysisbot',       name:'Analysis Bot',   cost:50,   gameTier:'bronze',   canKill:false, freeArmor:true, isMod:true },
     { id:'fleetanalysisbot1', name:'Fleet AB 1',     cost:1250, gameTier:'diamond',  canKill:true  },
     { id:'fleetanalysisbot2', name:'Fleet AB 2',     cost:1250, gameTier:'diamond',  canKill:true  },
     { id:'fleetanalysisbot3', name:'Fleet AB 3',     cost:2000, gameTier:'diamond', canKill:true  },
@@ -804,6 +804,7 @@ const ENEMIES = [
     { id:'armorbot',          name:'Armorbot',       cost:500,  gameTier:'gold',     canKill:false },
     { id:'emperor1',          name:'Emperor 1',      cost:2200, gameTier:'uranium',  canKill:true  },
     { id:'emperor2',          name:'Emperor 2',      cost:2800, gameTier:'insanium', canKill:true  },
+    { id:'ridableemperor',    name:'Ridable Emperor', cost:3000, gameTier:'insanium', canKill:true, isRaptor:true, isMod:true  },
   ];
 
   const GAME_TIERS = [
@@ -817,7 +818,7 @@ const ENEMIES = [
   ];
 
   let RIDER_EXCLUDED = new Set([
-    'flameraptor','laserraptor','zombieraptor',
+    'flameraptor','laserraptor','zombieraptor', 'ridableemperor',
     'spidertron5000','spidertron6000','spidertron7000'
   ]);
 
@@ -840,11 +841,10 @@ const ENEMIES = [
 
   function portrait(id, armor) { 
       let pId = id;
-      if (id === 'bow2_stationarym') pId = 'bow2';
-      if (id === 'bow4_stationarym') pId = 'bow4';
+      if (id === 'bow2_stationary') pId = 'bow2';
+      if (id === 'bow4_stationary') pId = 'bow4';
+      if (id === 'ridableemperor') pId = 'emperor2';
       if (id === 'icearcher_stationary') pId = 'icearcher';
-      if (id === 'analysisbotm') pId = 'analysisbot';
-      if (id === 'playerdummym') pId = 'playerdummy';
       return PORTRAIT + pId + (armor ? '_armor' : '') + '.png'; 
   }
   function getRiderEnemy()     { return selectedRiderId ? ENEMIES.find(e => e.id === selectedRiderId) : null; }
