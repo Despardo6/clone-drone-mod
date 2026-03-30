@@ -632,6 +632,8 @@
         <div class="bet-k-controls tier-bet-controls">
           <span class="bet-amount-label">Bet</span>
           <input class="bet-input" id="tier-bet-amount" type="number" min="1" value="100">
+          <!-- NEW "ALL" BUTTON ADDED HERE -->
+          <button class="bet-go-btn" style="background: var(--gold); padding: 7px 10px; margin-right: 4px;" onclick="doBetTierAll()">ALL</button>
           <button class="bet-go-btn" id="tier-bet-btn" onclick="doBetTier()">PLACE BET</button>
         </div>
         <div class="tier-grid" id="tier-grid"></div>
@@ -649,7 +651,9 @@
         <div class="bet-k-controls">
           <span class="bet-amount-label">Bet</span>
           <input class="bet-input" id="killer-bet-amount" type="number" min="1" value="100">
-          <button class="bet-go-btn" style="padding:7px 14px;" onclick="doBetKiller()">BET</button>
+          <!-- NEW "ALL" BUTTON ADDED HERE -->
+          <button class="bet-go-btn" style="background: var(--gold); padding: 7px 10px; margin-right: 4px;" onclick="doBetKillerAll()">ALL</button>
+          <button class="bet-go-btn" id="killer-bet-btn" style="padding:7px 14px;" onclick="doBetKiller()">BET</button>
         </div>
         <div class="betkiller-grid-wrap" id="betkiller-grid-wrap"></div>
       </div>
@@ -1678,6 +1682,32 @@ const ENEMIES = [
     if (amount <= 0) { showToast('Enter a valid bet amount.'); return; }
     relaySend({ type:'betkiller', username:twitchUser.login, enemyId, amount });
     spendCoins(amount);
+  }
+
+  function doBetTierAll() {
+    if (!_modOnline || !_inTwitchMode) return;
+    if (!selectedTier) { showToast('Select a tier first.'); return; }
+    
+    // We send -1 to tell the C# mod to automatically bet 100% of their actual balance
+    relaySend({ type:'bettier', username:twitchUser.login, tier:selectedTier, amount:-1 });
+    
+    // Optimistically zero out their local UI coins instantly
+    _simulatedCoins = 0;
+    document.getElementById('coin-display').textContent = '0';
+    flashButton('tier-bet-btn', 'ALL IN!', '#3ddc84', 800);
+  }
+
+  function doBetKillerAll() {
+    if (!_modOnline || !_inTwitchMode) return;
+    const enemyId = selectedKillerEnemy ? selectedKillerEnemy.id : 'other';
+    
+    // We send -1 to tell the C# mod to automatically bet 100% of their actual balance
+    relaySend({ type:'betkiller', username:twitchUser.login, enemyId, amount:-1 });
+    
+    // Optimistically zero out their local UI coins instantly
+    _simulatedCoins = 0;
+    document.getElementById('coin-display').textContent = '0';
+    flashButton('killer-bet-btn', 'ALL IN!', '#3ddc84', 800);
   }
 
   function doVote(idx) {
