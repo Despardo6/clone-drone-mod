@@ -1456,15 +1456,12 @@ const ENEMIES = [
         tabs.style.display  = 'none';
         coins.style.display = 'none';
         
-        // FIX 1: INCLUDE .vote-sub IN THE LIST
         document.querySelectorAll('.spawn-sub,.clone-sub,.bettier-sub,.betkiller-sub,.suggest-sub,.vote-sub')
           .forEach(p => p.classList.remove('visible'));
       }
 
       if (state.riderExcluded && Array.isArray(state.riderExcluded)) {
           RIDER_EXCLUDED = new Set(state.riderExcluded);
-          
-          // Refresh the popup so users see the newly unlocked riders immediately
           if (Array.isArray(state.spawnableEnemies)) {
               buildRiderPopup(state.spawnableEnemies);
           }
@@ -1479,11 +1476,13 @@ const ENEMIES = [
     if (Array.isArray(state.spawnableEnemies) && state.spawnableEnemies.length > 0) {
       updateEnemyAvailability(state.spawnableEnemies, state.enemyCosts || {});
       buildRiderPopup(state.spawnableEnemies);
-    } else if (!_inTwitchMode) {
+    } else {
       document.querySelectorAll('#enemy-grid-wrap .enemy-card').forEach(card => {
         card.style.opacity = '0.35';
         card.style.pointerEvents = 'none';
       });
+      // Safety fix: If no enemies available (e.g., game paused, or exception handled), empty the rider list too
+      buildRiderPopup([]);
     }
   }
 
