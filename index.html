@@ -1190,13 +1190,11 @@ const ENEMIES = [
     if (!raw.trim()) { showToast('Enter a level link, ID, or mod ID first.'); return; }
     const levelId = parseSuggestInput(raw, isMod);
     if (!levelId) { showToast('Could not extract a valid ID from that input.'); return; }
+    
     relaySend({ type: 'suggest', username: twitchUser.login, levelId: levelId, modSuggest: isMod });
-    const btn = document.getElementById('suggest-btn');
-    if (btn) {
-      const orig = btn.textContent, origBg = btn.style.background;
-      btn.textContent = 'SENT!'; btn.style.background = '#4f9fff';
-      setTimeout(() => { btn.textContent = orig; btn.style.background = origBg; }, 700);
-    }
+
+    // REPLACED MANUAL LOGIC WITH THE NEW FUNCTION
+    flashButton('suggest-btn', 'SENT!', '#4f9fff');
   }
 
   // ==========================================================================
@@ -1638,13 +1636,42 @@ const ENEMIES = [
   }
 
   // ── Actions ────────────────────────────────────────────────────────────────
+  const flashStates = {}; // Global tracker for button states
+
   function flashButton(id, text, color, duration) {
     duration = duration || 700;
     const btn = document.getElementById(id);
     if (!btn) return;
-    const orig = btn.textContent, origBg = btn.style.background;
-    btn.textContent = text; btn.style.background = color;
-    setTimeout(() => { btn.textContent = orig; btn.style.background = origBg; }, duration);
+
+    // 1. If this is the FIRST click in a spam sequence, save the REAL original state
+    if (!flashStates[id]) {
+      flashStates[id] = {
+        text: btn.textContent,
+        bg: btn.style.background,
+        activeCount: 0
+      };
+    }
+
+    // 2. Increment how many "flashes" are currently requested for this button
+    flashStates[id].activeCount++;
+
+    // 3. Update the button visually
+    btn.textContent = text;
+    btn.style.background = color;
+
+    // 4. Set a timer to "remove" this specific click's flash
+    setTimeout(() => {
+      if (flashStates[id]) {
+        flashStates[id].activeCount--;
+
+        // 5. Only revert to original if there are NO more pending flashes
+        if (flashStates[id].activeCount <= 0) {
+          btn.textContent = flashStates[id].text;
+          btn.style.background = flashStates[id].bg;
+          delete flashStates[id]; // Clean up memory
+        }
+      }
+    }, duration);
   }
 
   function doSpawn() {
