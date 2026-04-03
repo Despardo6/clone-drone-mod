@@ -472,24 +472,29 @@
     }
     .site-credits {
       position: fixed;
-      right: 14px;
+      left: 14px;
       bottom: 12px;
       z-index: 30;
-      max-width: min(360px, calc(100vw - 28px));
-      padding: 8px 10px;
-      border: 1px solid rgba(46, 54, 80, 0.9);
+      display: none;
+      max-width: min(230px, calc(100vw - 28px));
+      padding: 6px 8px;
+      border: 1px solid rgba(46, 54, 80, 0.45);
       border-radius: 8px;
-      background: rgba(10, 13, 19, 0.82);
-      backdrop-filter: blur(8px);
-      color: var(--text-dim);
+      background: rgba(10, 13, 19, 0.42);
+      backdrop-filter: blur(5px);
+      color: rgba(208, 216, 232, 0.48);
       font-family: 'Share Tech Mono', monospace;
-      font-size: 0.66rem;
-      line-height: 1.5;
-      text-align: right;
+      font-size: 0.58rem;
+      line-height: 1.35;
+      text-align: left;
       pointer-events: none;
+      opacity: 0.78;
+    }
+    .site-credits.visible {
+      display: block;
     }
     .site-credits strong {
-      color: var(--text);
+      color: rgba(208, 216, 232, 0.68);
       font-weight: 600;
     }
 
@@ -569,10 +574,10 @@
       }
 
       .site-credits {
-        right: 10px;
+        left: 10px;
         bottom: 10px;
-        max-width: calc(100vw - 20px);
-        font-size: 0.62rem;
+        max-width: 180px;
+        font-size: 0.54rem;
       }
 
       .tab-bar {
@@ -681,8 +686,8 @@
   </div>
 
   <div class="site-credits">
-    <div><strong>Coding for Twitch Improvements by:</strong> Despardo6</div>
-    <div><strong>Icon drawing for Twitch Improvements by:</strong> Rizzy Bot</div>
+    <div><strong>Code:</strong> Despardo6</div>
+    <div><strong>Icon:</strong> Rizzy Bot</div>
   </div>
 
   <div class="layout" id="app-layout">
@@ -1479,8 +1484,10 @@ const ENEMIES = [
   function showChannelFinder() {
     const finder = document.getElementById('channel-finder');
     const appLayout = document.getElementById('app-layout');
+    const credits = document.querySelector('.site-credits');
     finder.classList.add('visible');
     appLayout.style.display = 'none';
+    if (credits) credits.classList.add('visible');
     updateLiveBadge(false);
     resetStreamEmbeds();
 
