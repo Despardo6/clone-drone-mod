@@ -32,7 +32,16 @@
       padding: 0 20px; border-bottom: 1px solid var(--border);
       background: var(--surface); height: 48px; z-index: 10;
     }
-    .logo { font-size: 1.1rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; }
+    .logo {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: inherit;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .logo:hover { opacity: 0.85; }
     .logo span { color: var(--accent); }
     .header-right { display: flex; align-items: center; gap: 20px; font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; }
     .live-badge {
@@ -620,7 +629,7 @@
 <body>
 
   <header>
-    <div class="logo">Clone Drone <span>Twitch Mode</span></div>
+    <a class="logo" href="/" onclick="goToFinder(event)">Clone Drone <span>Twitch Mode</span></a>
     <div class="header-right">
       <div class="live-badge" id="live-badge">OFFLINE</div>
     </div>
@@ -1422,6 +1431,15 @@ const ENEMIES = [
       ? path.replace(/[^/]+$/, '')
       : (path.endsWith('/') ? path : path.replace(/[^/]+$/, ''));
     window.location.href = basePath + encodeURIComponent(normalized.toLowerCase());
+  }
+
+  function goToFinder(event) {
+    if (event) event.preventDefault();
+    const path = window.location.pathname;
+    const basePath = path.endsWith('.html')
+      ? path.replace(/[^/]+$/, '')
+      : (path.endsWith('/') ? path : path.replace(/[^/]+$/, ''));
+    window.location.href = basePath;
   }
 
   function showChannelFinder() {
