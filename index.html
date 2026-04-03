@@ -385,6 +385,83 @@
     .auth-logout-btn { background: transparent; border: 1px solid var(--border2); color: var(--text-dim); font-family: 'Share Tech Mono', monospace; font-size: 0.58rem; padding: 4px 8px; border-radius: 2px; cursor: pointer; letter-spacing: 1px; text-transform: uppercase; transition: all 0.15s; flex-shrink: 0; white-space: nowrap; }
     .auth-logout-btn:hover { border-color: var(--text-dim); color: var(--text); }
 
+    /* ── CHANNEL FINDER ── */
+    .channel-finder {
+      display: none;
+      min-height: calc(100vh - 48px);
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at top, rgba(79, 159, 255, 0.18), transparent 38%),
+        linear-gradient(180deg, #0f131d 0%, #090b10 100%);
+    }
+    .channel-finder.visible { display: flex; }
+    .finder-card {
+      width: min(520px, 100%);
+      padding: 28px;
+      background: rgba(19, 22, 30, 0.96);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
+    }
+    .finder-kicker {
+      color: var(--accent);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .finder-title {
+      font-size: clamp(2rem, 4vw, 2.8rem);
+      line-height: 0.95;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+    .finder-copy {
+      color: var(--text-dim);
+      font-size: 1rem;
+      margin-bottom: 18px;
+    }
+    .finder-form {
+      display: flex;
+      gap: 10px;
+    }
+    .finder-input {
+      flex: 1;
+      min-width: 0;
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      padding: 14px 16px;
+      font: inherit;
+      font-size: 1rem;
+    }
+    .finder-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(79, 159, 255, 0.18);
+    }
+    .finder-btn {
+      border: 0;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), #76b4ff);
+      color: #08111e;
+      font: inherit;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      padding: 0 20px;
+      cursor: pointer;
+      text-transform: uppercase;
+    }
+    .finder-hint {
+      margin-top: 14px;
+      color: var(--text-dim);
+      font-size: 0.92rem;
+    }
+
     /* panel lock overlay */
     .panel-lock { flex: 1; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 20px; text-align: center; color: var(--text-dim); }
     .panel-lock.visible { display: flex; }
@@ -552,7 +629,20 @@
   <!-- Toast notification container (fixed overlay, top-right) -->
   <div class="toast-container" id="toast-container"></div>
 
-  <div class="layout">
+  <div class="channel-finder" id="channel-finder">
+    <div class="finder-card">
+      <div class="finder-kicker">Channel Finder</div>
+      <h1 class="finder-title">Choose a streamer</h1>
+      <p class="finder-copy">Enter a Twitch username or paste a Twitch channel link and we’ll take you straight to that streamer’s spawn page.</p>
+      <form class="finder-form" id="finder-form">
+        <input class="finder-input" id="finder-input" type="text" placeholder="Streamer username or Twitch URL" autocomplete="off" spellcheck="false">
+        <button class="finder-btn" type="submit">Open</button>
+      </form>
+      <div class="finder-hint">Example: `despardo6` or `https://www.twitch.tv/despardo6` both open `/<username>`.</div>
+    </div>
+  </div>
+
+  <div class="layout" id="app-layout">
 
     <div class="spawn-panel">
 
@@ -1303,6 +1393,54 @@ const ENEMIES = [
   let _cpm          = 0;
   let _coinTimer    = null;
 
+  function getUrlChannel() {
+    const qsChannel = new URLSearchParams(window.location.search).get('channel');
+    if (qsChannel) return qsChannel.trim().replace(/^@/, '');
+
+    const rawSegment = window.location.pathname.split('/').filter(Boolean).pop() || '';
+    const cleanSegment = rawSegment.replace(/\.html$/i, '').trim().replace(/^@/, '');
+    return cleanSegment.toLowerCase() === 'index' ? '' : cleanSegment;
+  }
+
+  function normalizeChannelInput(value) {
+    let input = (value || '').trim();
+    if (!input) return '';
+
+    input = input.replace(/^@/, '');
+
+    const twitchMatch = input.match(/^(?:https?:\/\/)?(?:www\.)?twitch\.tv\/([^/?#]+)/i);
+    if (twitchMatch) input = twitchMatch[1];
+
+    return input.replace(/^@/, '').replace(/[^a-zA-Z0-9_]/g, '');
+  }
+
+  function goToChannel(channel) {
+    const normalized = normalizeChannelInput(channel);
+    if (!normalized) return;
+    const path = window.location.pathname;
+    const basePath = path.endsWith('.html')
+      ? path.replace(/[^/]+$/, '')
+      : (path.endsWith('/') ? path : path.replace(/[^/]+$/, ''));
+    window.location.href = basePath + encodeURIComponent(normalized.toLowerCase());
+  }
+
+  function showChannelFinder() {
+    const finder = document.getElementById('channel-finder');
+    const appLayout = document.getElementById('app-layout');
+    finder.classList.add('visible');
+    appLayout.style.display = 'none';
+    updateLiveBadge(false);
+    resetStreamEmbeds();
+
+    const form = document.getElementById('finder-form');
+    const input = document.getElementById('finder-input');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      goToChannel(input.value);
+    });
+    input.focus();
+  }
+
   // ── Stream embeds ──────────────────────────────────────────────────────────
   function updateStreamEmbeds(channel) {
     const hn = window.location.hostname;
@@ -1833,9 +1971,7 @@ const ENEMIES = [
 
     if (loggedIn) {
       switchTab('spawn');
-      const qsChannel  = new URLSearchParams(window.location.search).get('channel');
-      const rawSegment = window.location.pathname.split('/').filter(Boolean).pop() || '';
-      const urlChannel = qsChannel || rawSegment.replace(/\.html$/i, '') || 'despardo6';
+      const urlChannel = getUrlChannel();
       relayConnect(urlChannel);
     } else {
       if (_ws) { try { _ws.close(); } catch {} _ws = null; }
@@ -1879,7 +2015,8 @@ const ENEMIES = [
   setInterval(updateClock, 1000);
   updateClock();
 
-  initAuth();
+  if (getUrlChannel()) initAuth();
+  else showChannelFinder();
   </script>
 </body>
 </html>
