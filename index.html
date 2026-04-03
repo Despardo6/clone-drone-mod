@@ -1968,10 +1968,17 @@ const ENEMIES = [
   // ==========================================================================
   const TWITCH_CLIENT_ID = 'nt2yu1gs21vl39zcd2b8ntju9jx165';
   const TWITCH_REDIRECT  = 'https://clone-drone-mod.vercel.app';
+  const TWITCH_POST_AUTH_CHANNEL_KEY = 'twitch_post_auth_channel';
 
   let twitchUser = null;
 
   function twitchLogin() {
+    const currentChannel = getUrlChannel();
+    if (currentChannel) {
+      sessionStorage.setItem(TWITCH_POST_AUTH_CHANNEL_KEY, currentChannel);
+    } else {
+      sessionStorage.removeItem(TWITCH_POST_AUTH_CHANNEL_KEY);
+    }
     const url = 'https://id.twitch.tv/oauth2/authorize'
       + '?client_id='    + TWITCH_CLIENT_ID
       + '&redirect_uri=' + encodeURIComponent(TWITCH_REDIRECT)
@@ -2045,8 +2052,11 @@ const ENEMIES = [
     const hash      = new URLSearchParams(window.location.hash.slice(1));
     const hashToken = hash.get('access_token');
     if (hashToken) {
+      const returnChannel = sessionStorage.getItem(TWITCH_POST_AUTH_CHANNEL_KEY);
       localStorage.setItem('twitch_token', hashToken);
-      history.replaceState(null, '', window.location.pathname);
+      const restoredPath = returnChannel ? '/' + encodeURIComponent(returnChannel.toLowerCase()) : window.location.pathname;
+      history.replaceState(null, '', restoredPath);
+      sessionStorage.removeItem(TWITCH_POST_AUTH_CHANNEL_KEY);
       const user = await fetchTwitchUser(hashToken);
       setAuthState(user);
       return;
@@ -2074,8 +2084,9 @@ const ENEMIES = [
   setInterval(updateClock, 1000);
   updateClock();
 
-  if (getUrlChannel()) initAuth();
-  else showChannelFinder();
+  initAuth().finally(() => {
+    if (!getUrlChannel()) showChannelFinder();
+  });
   </script>
 </body>
 </html>
