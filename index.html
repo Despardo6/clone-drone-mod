@@ -916,6 +916,8 @@ const ENEMIES = [
     { id:'icesword',          name:'Ice Sword',      cost:650,  gameTier:'diamond',  canKill:true,  isMod:true },
     { id:'icearcher',         name:'Ice Archer',     cost:650,  gameTier:'diamond',  canKill:true,  isMod:true },
     { id:'icearcher_stationary', name:'Ice Arch Stat.', cost:600,  gameTier:'diamond',  canKill:true, isMod:true },
+    { id:'icecrossbow',         name:'Ice Crossbow',     cost:850,  gameTier:'diamond',     canKill:true, isMod:true },
+    { id:'icecrossbow_stationary',         name:'Ice Crossbow Stat.',     cost:650,  gameTier:'diamond',     canKill:true, isMod:true },
     { id:'icehammer',         name:'Ice Hammer',     cost:550,  gameTier:'diamond',  canKill:true,  isMod:true },
     { id:'icespear',          name:'Ice Spear',      cost:750,  gameTier:'diamond',  canKill:true,  isMod:true },
     { id:'icekicker',         name:'Ice Kicker',     cost:350,  gameTier:'silver',   canKill:false, isMod:true },
@@ -931,9 +933,14 @@ const ENEMIES = [
     // Egg Throwers
     { id:'eggthrower',         name:'Egg Thrower',     cost:1800,  gameTier:'titanium',     canKill:true, isMod:true },
     { id:'eggthrower_stationary',         name:'Egg Thrower Stat.',     cost:1800,  gameTier:'titanium',     canKill:true, isMod:true },
-    // Shotgunners
-    { id:'shotgunner1',       name:'Shotgunner 1',     cost:500,  gameTier:'silver',     canKill:true, isMod:true },
-    { id:'shotgunner2',       name:'Shotgunner 2',     cost:800,  gameTier:'gold',       canKill:true, isMod:true },
+    // gunners
+    { id:'shotgunner1',       name:'Shotgunner 1',     cost:700,  gameTier:'silver',     canKill:true, isMod:true },
+    { id:'shotgunner2',       name:'Shotgunner 2',     cost:1200,  gameTier:'gold',       canKill:true, isMod:true },
+    { id:'mac',       name:'Mac',     cost:1000,  gameTier:'gold',     canKill:true, isMod:true },
+    { id:'rifle',         name:'Rifle',     cost:1200,  gameTier:'gold',     canKill:true, isMod:true },
+    { id:'rifle_stationary',         name:'Rifle Stat.',     cost:1100,  gameTier:'gold',     canKill:true, isMod:true },
+    { id:'blaster',       name:'Blaster',     cost:1200,  gameTier:'gold',     canKill:true, isMod:true },
+    { id:'blaster2',       name:'Blaster 2',     cost:1500,  gameTier:'gold',       canKill:true, isMod:true },
     // Zombies
     { id:'zombie1',           name:'Zombie 1',       cost:150,  gameTier:'bronze',   canKill:true  },
     { id:'zombie2',           name:'Zombie 2',       cost:300,  gameTier:'silver',   canKill:true  },
@@ -1007,6 +1014,8 @@ const ENEMIES = [
       if (id === 'crossbow2_stationary') pId = 'crossbow2';
       if (id === 'crossbow4_stationary') pId = 'crossbow4';
       if (id === 'eggthrower_stationary') pId = 'eggthrower';
+      if (id === 'rifle_stationary') pId = 'rifle';
+      if (id === 'icecrossbow_stationary') pId = 'icecrossbow';
       return PORTRAIT + pId + (armor ? '_armor' : '') + '.png'; 
   }
   function getRiderEnemy()     { return selectedRiderId ? ENEMIES.find(e => e.id === selectedRiderId) : null; }
